@@ -1,0 +1,36 @@
+.section {
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+    overflow-y: auto;
+}
+.tab {
+    display: flex;
+}
+.array {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+.item {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    align-items: center;
+}
+.itemDiv {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+}
+.price {
+    display: flex;
+    flex-direction: row;
+}
+.itemText {
+    text-align: center;
+}
