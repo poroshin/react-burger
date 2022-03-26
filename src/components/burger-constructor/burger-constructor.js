@@ -1,22 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import style from './burger-constructor.module.css';
-import { data } from '../../utils/data';
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import { menuItemPropTypes } from '../../utils/constants';
 
-function BurgerIngredients() {
-  const dataBun = [];
-  const dataMain = [];
-  const dataSauce = [];
-  data.forEach(function(i) {
-    if(i.type === 'bun') dataBun.push(i);
-    if(i.type === 'main') dataMain.push(i);
-    if(i.type === 'sauce') dataSauce.push(i);
-  });
+const BurgerConstructor = ({data, dataBun}) => {
   return (
-    <section className={style.section + ' pt-25 pl-5'}>
+    <section className={style.section + ' pt-25 pl-5 pb-30'}>
       <div className={style.elements + ' pb-4'}>
-        <div className={style.constructorElement}>
+        <div className={style.constructorElement + ' pl-10 pr-3'}>
           <ConstructorElement
             type="top"
             isLocked={true}
@@ -25,31 +17,19 @@ function BurgerIngredients() {
             thumbnail={dataBun[0].image}
           />
         </div>
-        <div className={style.drug + ' pl-5'}>
-          <DragIcon type="primary" />
-          <ConstructorElement
-            text={dataSauce[2].name}
-            price={dataSauce[2].price}
-            thumbnail={dataSauce[2].image}
-          />
-        </div>
-        <div className={style.drug + ' pl-5'}>
-          <DragIcon type="primary" />
-          <ConstructorElement
-            text={dataMain[0].name}
-            price={dataMain[0].price}
-            thumbnail={dataMain[0].image}
-          />
-        </div>
-        <div className={style.drug + ' pl-5'}>
+        <ul className={style.ingredients}>
+          {data.map((item, index) => (
+            <li key={item._id} className={style.drug + ' pl-5 mr-1'}>
             <DragIcon type="primary" />
-          <ConstructorElement
-            text={dataSauce[0].name}
-            price={dataSauce[0].price}
-            thumbnail={dataSauce[0].image}
-          />
-        </div>
-        <div className={style.constructorElement}>
+            <ConstructorElement
+              text={item.name}
+              price={item.price}
+              thumbnail={item.image}
+            />
+            </li>
+          ))}
+        </ul>
+        <div className={style.constructorElement + ' pl-10 pr-3'}>
           <ConstructorElement
             type="bottom"
             isLocked={true}
@@ -71,11 +51,15 @@ function BurgerIngredients() {
     </section>
   );
 }
+BurgerConstructor.propTypes = {
+  data: PropTypes.arrayOf(menuItemPropTypes.isRequired),
+  dataBun: PropTypes.arrayOf(menuItemPropTypes.isRequired),
+};
 ConstructorElement.propTypes = {
   isLocked: PropTypes.bool,
   text: PropTypes.string,
   price: PropTypes.number,
   thumbnail: PropTypes.string,
-}; 
+};
 
-export default BurgerIngredients;
+export default BurgerConstructor;

@@ -21,7 +21,6 @@ html, body, #root, main {
 }
 ::-webkit-scrollbar-track {
   background: #2F2F37;
-  margin-top: 200px;
 }
 ::-webkit-scrollbar-thumb {
   background: #8585AD;
