@@ -1,0 +1,29 @@
+.flexCenter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    background-color: #1C1C21;
+}
+.flexRowStart {
+    display: flex;
+    flex-direction: row;
+    flex-basis: 400px;
+    justify-content: flex-start;
+}
+.flexRowEnd {
+    display: flex;
+    flex-direction: row;
+    flex-basis: 400px;
+    justify-content: flex-end;
+}
+.navBtn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border-radius: 40px;
+}
+.logo {
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-top: 8px;
+}
