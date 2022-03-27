@@ -14,3 +14,9 @@ export const menuItemPropTypes = PropTypes.shape({
     image_large: PropTypes.string.isRequired,
     __v: PropTypes.number.isRequired,
 })
+
+export const orderDetailPropTypes = PropTypes.shape({
+    id: PropTypes.string.isRequired,
+})
+
+export const urlIngredients = 'https://norma.nomoreparties.space/api/ingredients';

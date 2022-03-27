@@ -3,6 +3,7 @@
     flex-direction: column;
     width: 600px;
     overflow-y: auto;
+    min-width: 600px;
 }
 .ingredients {
     display: flex;
