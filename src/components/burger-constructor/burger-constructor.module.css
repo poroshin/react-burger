@@ -37,7 +37,7 @@
     justify-content: space-between;
     padding: 0;
 }
-.constructorElement {
+.constructor__element {
     display: flex;
     justify-content: flex-end;
 }

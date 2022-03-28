@@ -24,7 +24,7 @@
     align-items: center;
     cursor: pointer;
 }
-.itemDiv {
+.item {
     display: flex;
     position: relative;
     flex-direction: column;
@@ -34,6 +34,6 @@
     display: flex;
     flex-direction: row;
 }
-.itemText {
+.item__p {
     text-align: center;
 }

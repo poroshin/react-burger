@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import style from './ingredient-details.module.css';
+
 import Modal from '../../components/modal/modal';
-import { menuItemPropTypes } from '../../utils/constants';
+import { menuItemPropTypes } from '../../utils/types';
+
+import style from './ingredient-details.module.css';
 
 const IngredientDetails = ({onClose, ingredient}) => {
   return (
@@ -10,7 +12,7 @@ const IngredientDetails = ({onClose, ingredient}) => {
 			<div className={style.modal}>
 				<h2 className='text text_type_main-large pt-10 pl-10 mt-2'>Детали ингредиента</h2>
 				<div className={style.description}>
-					<img src={ingredient.image_large} alt={ingredient.name} className={style.img + ' pl-4 pr-4'}></img>
+					<img src={ingredient.image_large} alt={ingredient.name} className={`${style.img} pl-4 pr-4`}></img>
       		<p className='text text_type_main-medium pt-4 pb-8'>{ingredient.name}</p>
 					<ul className={style.composition}>
 						<li className={style.items}>

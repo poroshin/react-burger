@@ -2,7 +2,6 @@
     display: flex;
     overflow: hidden;
     position: absolute;
-    /* justify-content: center; */
     width: 720px;
     height: 700px;
     z-index: 10;
@@ -12,7 +11,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
-.btnClose {
+.modal__button {
     position: absolute;
     border: none;
     background: #00000000;
