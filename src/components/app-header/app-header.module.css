@@ -1,22 +1,22 @@
-.flexCenter {
+.header {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     background-color: #1C1C21;
 }
-.flexRowStart {
+.header__start {
     display: flex;
     flex-direction: row;
     flex-basis: 400px;
     justify-content: flex-start;
 }
-.flexRowEnd {
+.header__end {
     display: flex;
     flex-direction: row;
     flex-basis: 400px;
     justify-content: flex-end;
 }
-.navBtn {
+.header__nav {
     display: flex;
     flex-direction: row;
     justify-content: center;

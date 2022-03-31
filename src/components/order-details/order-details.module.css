@@ -1,0 +1,10 @@
+.modal {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+.img {
+    width: 120px;
+    height: 120px;
+}

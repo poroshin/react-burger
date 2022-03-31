@@ -1,0 +1,23 @@
+.modal {
+    display: flex;
+    overflow: hidden;
+    position: absolute;
+    width: 720px;
+    height: 700px;
+    z-index: 10;
+    background-color: #1C1C21;
+    border-radius: 40px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.modal__button {
+    position: absolute;
+    border: none;
+    background: #00000000;
+    cursor: pointer;
+    top: 60px;
+    right: 40px;
+    height: 30px;
+    width: 36px;
+}
