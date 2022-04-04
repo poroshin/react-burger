@@ -5,24 +5,28 @@ import BurgerIngredients from '../burger-ingredients/burger-ingredients';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import OrderDetails from '../order-details/order-details';
-import { urlIngredients } from '../../utils/constants';
+import { urlIngredients, urlOrders } from '../../utils/constants';
+import { DataIngredientsContext, OrderDetailContext, SelectedIngredientsContext } from '../../utils/context';
 
 import style from './app.module.css';
 
 const App = () => {
-  const [state, setState] = useState({
-    isLoaded: false,
-    data: []
-  });
   const [modal, setModal] = useState({
     isOpenIngredientDetails: false,
     isOpenOrderDetails: false,
   });
   const [ingredient, setIngredient] = useState(null);
-  const [orderDetail, setOrderDetail] = useState(null);
-  const orderDetailData = {
-    id: '034536',
-  }
+
+  const [orderDetail, setOrderDetail] = useState({
+    isLoaded: false
+  });
+  const [dataState, setDataState] = useState({
+    isLoaded: false,
+    data: []
+  });
+  const [selectedIngredients, setSelectedIngredients] = useState({
+    ingredients: []
+  });
   
   useEffect(() => {
     getIngredients();
@@ -41,7 +45,7 @@ const App = () => {
       })
       .then(data => {
         if(data.success){
-          setState({ ...state, data: data.data, isLoaded: true }) 
+          setDataState({ ...dataState, data: data.data, isLoaded: true }) 
         } else {
           let error = new Error('Server response form error');
           throw error
@@ -49,31 +53,67 @@ const App = () => {
       })
       .catch(e => {
         console.log(e);
-        setState({ ...state, isLoaded: false });
+        setDataState({ ...dataState, isLoaded: false });
+      })
+  }
+
+  const getOrder = () => {
+    fetch(urlOrders, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(selectedIngredients)
+    })
+      .then(res => {
+        if(res.status >= 200 && res.status < 300){
+          return res.json();
+        } else {
+          let error = new Error(res.statusText);
+          error.response = res;
+          throw error
+        }
+      })
+      .then(data => {
+        if(data.success){
+          setOrderDetail({ ...orderDetail, name: data.name, orderNumber: data.order.number, isLoaded: true }) 
+        } else {
+          let error = new Error('Server response form error');
+          throw error
+        }
+      })
+      .catch(e => {
+        console.log(e);
+        setOrderDetail({ ...orderDetail, isLoaded: false });
       })
   }
 
   const handleOpenModalOrder = () => {
-    setOrderDetail(orderDetailData);
-    setModal({ ...state, isOpenOrderDetails: true });
+    getOrder();
+    setModal({ ...modal, isOpenOrderDetails: true });
   }
   const handleOpenModalIngredient = (ingredient) => {
     setIngredient(ingredient);
-    setModal({ ...state, isOpenIngredientDetails: true });
+    setModal({ ...modal, isOpenIngredientDetails: true });
   }
   const handleCloseModal = () => {
-    setModal({ ...state, isOpenIngredientDetails: false, isOpenOrderDetails: false });
+    setModal({ ...modal, isOpenIngredientDetails: false, isOpenOrderDetails: false });
   }
   
-  const { data, isLoaded } = state;
   return (
     <>
       <AppHeader />
       <main className={style.main}>
-        {modal.isOpenIngredientDetails && <IngredientDetails ingredient={ingredient} onClose={handleCloseModal} />}
-        {modal.isOpenOrderDetails && <OrderDetails orderDetail={orderDetail} onClose={handleCloseModal} />}
-        <BurgerIngredients data={data} isLoaded={isLoaded} onOpenModalIngredient={handleOpenModalIngredient} />
-        <BurgerConstructor data={data} isLoaded={isLoaded} onOpenModalOrder={handleOpenModalOrder} />
+        <DataIngredientsContext.Provider value={{dataState, setDataState}}>
+          <SelectedIngredientsContext.Provider value={{selectedIngredients, setSelectedIngredients}}>
+            <OrderDetailContext.Provider value={{orderDetail, setOrderDetail}}>
+              {modal.isOpenIngredientDetails && <IngredientDetails ingredient={ingredient} onClose={handleCloseModal} />}
+              {modal.isOpenOrderDetails && <OrderDetails onClose={handleCloseModal} />}
+              <BurgerIngredients onOpenModalIngredient={handleOpenModalIngredient} />
+              <BurgerConstructor onOpenModalOrder={handleOpenModalOrder} />
+            </OrderDetailContext.Provider>
+          </SelectedIngredientsContext.Provider>
+        </DataIngredientsContext.Provider>
       </main>
     </>
   );
