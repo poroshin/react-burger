@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import { ingredients } from '../../utils/constants';
 import { menuItemPropTypes } from '../../utils/types';
-import { filterBun, filterSauce, filterMain } from '../../utils/filter';
+import { dataFilter } from '../../utils/filter';
+import { DataIngredientsContext } from '../../utils/context';
 
 import style from './burger-ingredients.module.css';
 
@@ -21,32 +23,35 @@ const Ingredient = ({ingredient, count, isOpenModal}) => (
   </li>
 );
 
-const BurgerIngredients = ({data, isLoaded, onOpenModalIngredient}) => {
+const BurgerIngredients = ({onOpenModalIngredient}) => {
+  
+  const { dataState } = useContext(DataIngredientsContext);
   const textCount = 1;
-  const [current, setCurrent] = React.useState('one');
+  const [current, setCurrent] = React.useState(ingredients.bun);
+
   return (
     <section className={`${style.section} pt-5 pr-5 pb-30`}>
       <h1 className='text text_type_main-large pt-5 pb-5'>
         Соберите бургер
       </h1>
       <div className={`${style.tab} pb-5`}>
-        <Tab value="bun" active={current === 'bun'} onClick={setCurrent}>
+        <Tab value="bun" active={current === ingredients.bun} onClick={setCurrent}>
           Булки
         </Tab>
-        <Tab value="sauce" active={current === 'sauce'} onClick={setCurrent}>
+        <Tab value="sauce" active={current === ingredients.bun} onClick={setCurrent}>
           Соусы
         </Tab>
-        <Tab value="main" active={current === 'main'} onClick={setCurrent}>
+        <Tab value="main" active={current === ingredients.bun} onClick={setCurrent}>
           Начинки
         </Tab>
       </div>
-      {isLoaded &&
+      {dataState.isLoaded &&
       <div className={`${style.scrollBar} pr-1`}>
         <h2 className='text text_type_main-medium pt-5 pb-2'>
           Булки
         </h2>
         <ul className={style.array}>
-          {filterBun(data).map((item, index) => (
+          {dataFilter(dataState.data, ingredients.bun).map((item, index) => (
             <Ingredient key={item._id} count={textCount} ingredient={item} isOpenModal={onOpenModalIngredient} />
           ))}
         </ul>
@@ -54,7 +59,7 @@ const BurgerIngredients = ({data, isLoaded, onOpenModalIngredient}) => {
           Соусы
         </h2>
         <ul className={style.array}>
-          {filterSauce(data).map((item, index) => (
+          {dataFilter(dataState.data, ingredients.sauce).map((item, index) => (
             <Ingredient key={item._id} count={textCount} ingredient={item} isOpenModal={onOpenModalIngredient} />
           ))}
         </ul>
@@ -62,7 +67,7 @@ const BurgerIngredients = ({data, isLoaded, onOpenModalIngredient}) => {
           Начинка
         </h2>
         <ul className={style.array}>
-          {filterMain(data).map((item, index) => (
+          {dataFilter(dataState.data, ingredients.main).map((item, index) => (
             <Ingredient key={item._id} count={textCount} ingredient={item} isOpenModal={onOpenModalIngredient} />
           ))}
         </ul>
@@ -73,6 +78,7 @@ const BurgerIngredients = ({data, isLoaded, onOpenModalIngredient}) => {
 }
 BurgerIngredients.propTypes = {
   data: PropTypes.arrayOf(menuItemPropTypes.isRequired),
+  onOpenModalIngredient: PropTypes.func.isRequired,
 };
 Ingredient.propTypes = {
   ingredient: menuItemPropTypes.isRequired,
