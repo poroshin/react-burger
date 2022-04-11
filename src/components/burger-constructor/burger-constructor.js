@@ -1,12 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useDrag, useDrop } from "react-dnd";
+import { useDrop } from "react-dnd";
 import PropTypes from 'prop-types';
-import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import { ConstructorElement, Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import { v4 as uuidv4 } from 'uuid';
 
+import { ConstructorIngredient } from '../constructor-ingredient/constructor-ingredient';
 import { labels } from '../../utils/constants';
-import { menuItemPropTypes } from '../../utils/types';
-import { setBunSelectedIngredients, addItemSelectedIngredients, sortIngredients } from '../../services/actions/selectedIngredients';
+import { setBunSelectedIngredients, addItemSelectedIngredients } from '../../services/actions/selectedIngredients';
 import { increaseIngredientCount, setBunCount, deleteBunCount } from '../../services/actions/ingredients';
 import { setTotalPrice, deleteTotalPrice } from '../../services/actions/order';
 
@@ -26,7 +27,8 @@ const BurgerConstructor = ({onOpenModalOrder}) => {
         dispatch(deleteBunCount());
         dispatch(setBunCount(item));
       }else{
-        dispatch(addItemSelectedIngredients(item));
+        item.uuid = uuidv4();
+        dispatch(addItemSelectedIngredients(item, uuidv4()));
         dispatch(increaseIngredientCount(item));
       }
 		}
@@ -35,7 +37,7 @@ const BurgerConstructor = ({onOpenModalOrder}) => {
   useEffect(() => {
     dispatch(deleteTotalPrice());
     if(selectedBun){
-      dispatch(setTotalPrice(selectedBun.price));
+      dispatch(setTotalPrice(selectedBun.price * 2));
     }
     if(selectedIngredients){
       selectedIngredients.map((item, index) => {
@@ -60,8 +62,8 @@ const BurgerConstructor = ({onOpenModalOrder}) => {
         }
         {selectedIngredients && 
         <ul className={style.ingredients}>
-          {selectedIngredients.map((item, index) => (
-            <ConstructorIngredient key={index} ingredient={item} />
+          {selectedIngredients.map(item => (
+            <ConstructorIngredient key={item.uuid} ingredient={item} />
           ))}
         </ul>
         }
@@ -90,45 +92,8 @@ const BurgerConstructor = ({onOpenModalOrder}) => {
   );
 }
 
-const ConstructorIngredient = ({ingredient}) => {
-  const dispatch = useDispatch();
-	const ref = useRef();
-
-	const [, dragRef] = useDrag({
-		type: 'sort',
-		item: ingredient
-	});
-
-	const [, dropRef] = useDrop({
-		accept: 'sort',
-		drop(draggedIngredient) {
-			dispatch(sortIngredients(ingredient, draggedIngredient));
-		}
-	});
-  
-	dragRef(dropRef(ref));
-
-  return (
-    <li ref={ref} className={`${style.drug} pl-5 mr-1`}>
-      <DragIcon type="primary" />
-      <ConstructorElement
-        text={ingredient.name}
-        price={ingredient.price}
-        thumbnail={ingredient.image}
-      />
-    </li>
-  )
-}
-
 BurgerConstructor.propTypes = {
-  data: PropTypes.arrayOf(menuItemPropTypes.isRequired),
   onOpenModalOrder: PropTypes.func.isRequired,
-};
-ConstructorElement.propTypes = {
-  isLocked: PropTypes.bool,
-  text: PropTypes.string,
-  price: PropTypes.number,
-  thumbnail: PropTypes.string,
 };
 
 export default BurgerConstructor;

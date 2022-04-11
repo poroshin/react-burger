@@ -13,34 +13,18 @@ export const getIngredients = () => {
     dispatch({
       type: GET_INGREDIENTS_REQUEST
     });
-    getIngredientsRequest()
-      .then(res => {
-        if(res.status >= 200 && res.status < 300){
-          return res.json();
-        } else {
-					dispatch({
-						type: GET_INGREDIENTS_FAILED
-					});
-        }
-      })
-      .then(data => {
-        if(data.success){
-					dispatch({
-						type: GET_INGREDIENTS_SUCCESS,
-						data: data.data
-					});
-        } else {
-					dispatch({
-						type: GET_INGREDIENTS_FAILED
-					});
-        }
-      })
-      .catch(e => {
-        console.log(e);
-				dispatch({
-					type: GET_INGREDIENTS_FAILED
-				});
-      })
+    getIngredientsRequest().then(res => {
+			dispatch({
+				type: GET_INGREDIENTS_SUCCESS,
+				data: res.data
+			});
+		})
+		.catch(e => {
+			console.log(e);
+			dispatch({
+				type: GET_INGREDIENTS_FAILED
+			});
+		})
   };
 }
 

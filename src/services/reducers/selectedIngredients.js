@@ -5,6 +5,7 @@ import {
 	DELETE_ITEM_SELECTED_INGREDIENTS,
 	CLEAR_SELECTED_INGREDIENTS,
   SORT_INGREDIENTS,
+  CLEAR_INGREDIENTS,
 } from '../actions/selectedIngredients';
 
 const selectedIngredientsInitialState = {
@@ -35,7 +36,10 @@ export const selectedIngredientsReducer = (state = selectedIngredientsInitialSta
     case DELETE_ITEM_SELECTED_INGREDIENTS: {
       return {
         ...state,
-        data: [...state.data, action.ingredient]
+        data: [...state.data].filter(item => 
+          item.uuid !== action.ingredient.uuid
+        )
+        // data: [...state.data, action.ingredient]
       };
     }
     case CLEAR_SELECTED_INGREDIENTS: {
@@ -51,6 +55,9 @@ export const selectedIngredientsReducer = (state = selectedIngredientsInitialSta
         ...state, 
         data
       }
+    }
+    case CLEAR_INGREDIENTS: {
+      return selectedIngredientsInitialState;
     }
     default: {
       return state;

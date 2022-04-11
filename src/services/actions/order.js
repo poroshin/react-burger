@@ -12,34 +12,18 @@ export const getOrder = (selectedIngredients) => {
     dispatch({
       type: GET_ORDER_REQUEST
     });
-    getOrderRequest(selectedIngredients)
-			.then(res => {
-				if(res.status >= 200 && res.status < 300){
-					return res.json();
-				} else {
-					dispatch({
-						type: GET_ORDER_FAILED
-					});
-				}
-			})
-			.then(data => {
-				if(data.success){
-					dispatch({
-						type: GET_ORDER_SUCCESS,
-						data: data
-					});
-				} else {
-					dispatch({
-						type: GET_ORDER_FAILED
-					});
-				}
-			})
-			.catch(e => {
-				console.log(e);
-        dispatch({
-          type: GET_ORDER_FAILED
-        });
-			})
+    getOrderRequest(selectedIngredients).then(data => {
+			dispatch({
+				type: GET_ORDER_SUCCESS,
+				data: data
+			});
+		})
+		.catch(e => {
+			console.log(e);
+			dispatch({
+				type: GET_ORDER_FAILED
+			});
+		})
   };
 }
 

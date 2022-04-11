@@ -4,6 +4,7 @@ export const ADD_ITEM_SELECTED_INGREDIENTS = 'ADD_ITEM_SELECTED_INGREDIENTS';
 export const DELETE_ITEM_SELECTED_INGREDIENTS = 'DELETE_ITEM_SELECTED_INGREDIENTS';
 export const CLEAR_SELECTED_INGREDIENTS = 'CLEAR_SELECTED_INGREDIENTS';
 export const SORT_INGREDIENTS = 'SORT_INGREDIENTS';
+export const CLEAR_INGREDIENTS = 'CLEAR_INGREDIENTS';
 
 export const addItemSelectedIngredients = (ingredient) => {
 	return {
@@ -37,5 +38,11 @@ export const sortIngredients = (itemFrom, itemTo) => {
 		type: SORT_INGREDIENTS,
 		itemFrom: itemFrom,
 		itemTo: itemTo
+	}
+}
+
+export const clearIngredients = () => {
+	return {
+		type: CLEAR_INGREDIENTS
 	}
 }

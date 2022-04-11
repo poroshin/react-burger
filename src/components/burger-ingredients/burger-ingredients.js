@@ -105,12 +105,10 @@ const BurgerIngredients = ({onOpenModalIngredient}) => {
   );
 }
 BurgerIngredients.propTypes = {
-  data: PropTypes.arrayOf(menuItemPropTypes.isRequired),
   onOpenModalIngredient: PropTypes.func.isRequired,
 };
 Ingredient.propTypes = {
   ingredient: menuItemPropTypes.isRequired,
-  count: PropTypes.number,
   isOpenModal: PropTypes.func.isRequired,
 };
 Counter.propTypes = {
