@@ -1,104 +1,87 @@
-import React, { useContext, useReducer, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useDrop } from "react-dnd";
 import PropTypes from 'prop-types';
-import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import { ConstructorElement, Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import { v4 as uuidv4 } from 'uuid';
 
-import { ingredients } from '../../utils/constants';
-import { menuItemPropTypes } from '../../utils/types';
-import { dataFilter, filterNotBun, randomData } from '../../utils/filter';
-import { DataIngredientsContext, SelectedIngredientsContext } from '../../utils/context';
+import { ConstructorIngredient } from '../constructor-ingredient/constructor-ingredient';
+import { labels } from '../../utils/constants';
+import { setBunSelectedIngredients, addItemSelectedIngredients } from '../../services/actions/selectedIngredients';
+import { increaseIngredientCount, setBunCount, deleteBunCount } from '../../services/actions/ingredients';
+import { setTotalPrice, deleteTotalPrice } from '../../services/actions/order';
 
 import style from './burger-constructor.module.css';
 
-const totalPriceInitialState = { price: 0 }; 
-function reducer(state, action) {
-  switch (action.type) {
-    case "setBun":
-      return { price: state.price + action.price * 2 };
-    case "add":
-      return { price: state.price + action.price };
-    case "remove":
-      return { price: state.price - action.price };
-    case "removeAll":
-      return totalPriceInitialState;
-    default:
-      throw new Error(`Wrong type of action: ${action.type}`);
-  }
-}
-
 const BurgerConstructor = ({onOpenModalOrder}) => {
+  const dispatch = useDispatch();
+  const selectedBun = useSelector(state => state.selectedIngredients.bun);
+  const selectedIngredients = useSelector(state => state.selectedIngredients.data);
+  const totalPrice = useSelector(state => state.order.totalPrice);
 
-  const { dataState } = useContext(DataIngredientsContext);
-  const { selectedIngredients, setSelectedIngredients } = useContext(SelectedIngredientsContext);
-  const [totalPriceState, totalPriceDispatcher] = useReducer(reducer, totalPriceInitialState, undefined);
+	const [, dropRef] = useDrop({
+		accept: 'ingredient',
+		drop(item) {
+      if(item.type === labels.bun){
+        dispatch(setBunSelectedIngredients(item));
+        dispatch(deleteBunCount());
+        dispatch(setBunCount(item));
+      }else{
+        item.uuid = uuidv4();
+        dispatch(addItemSelectedIngredients(item, uuidv4()));
+        dispatch(increaseIngredientCount(item));
+      }
+		}
+	});
   
-  const [exampleBun, setExampleBun] = useState(null);
-  const [exampleIngredients, setExampleIngredients] = useState(null);
-
   useEffect(() => {
-    if(dataState.isLoaded){
-      setExampleBun(dataFilter(dataState.data, ingredients.bun)[0]);
-      setExampleIngredients(randomData(filterNotBun(dataState.data)));
+    dispatch(deleteTotalPrice());
+    if(selectedBun){
+      dispatch(setTotalPrice(selectedBun.price * 2));
     }
-  }, [dataState]);
-
-  useEffect(() => {
-    if(exampleBun && exampleIngredients){
-      const tempIngredientsArray = [];
-      totalPriceDispatcher({type: 'setBun', price: exampleBun.price});
-      tempIngredientsArray.push(exampleBun._id);
-      exampleIngredients.map((item, index) => {
-        totalPriceDispatcher({type: 'add', price: item.price});
-        tempIngredientsArray.push(item._id);
+    if(selectedIngredients){
+      selectedIngredients.map((item, index) => {
+        dispatch(setTotalPrice(item.price));
       });
-      tempIngredientsArray.push(exampleBun._id);
-
-      setSelectedIngredients({ ingredients: tempIngredientsArray });
     }
-    return () => {
-      setSelectedIngredients({ ingredients: [] });
-      totalPriceDispatcher({type: 'removeAll'});
-    }
-  }, [exampleBun, exampleIngredients]);
+  }, [selectedBun, selectedIngredients]);
 
   return (
-    <section className={`${style.section} pt-25 pl-5 pb-30`}>
-      {dataState.isLoaded && exampleBun &&
+    <section className={`${style.section} pt-25 pl-5 pb-30`} ref={dropRef}>
       <div className={`${style.elements} pb-4`}>
-        <div className={`${style.constructor__element} pl-10 pr-3`}>
+        {selectedBun && 
+        <div className={`${style.constructor__element} pl-10 pr-1`}>
           <ConstructorElement
             type="top"
             isLocked={true}
-            text={exampleBun.name + ' (верх)'}
-            price={exampleBun.price}
-            thumbnail={exampleBun.image}
+            text={selectedBun.name + ' (верх)'}
+            price={selectedBun.price}
+            thumbnail={selectedBun.image}
           />
         </div>
+        }
+        {selectedIngredients && 
         <ul className={style.ingredients}>
-          {exampleIngredients.map((item, index) => (
-            <li key={index} className={`${style.drug} pl-5 mr-1`}>
-            <DragIcon type="primary" />
-            <ConstructorElement
-              text={item.name}
-              price={item.price}
-              thumbnail={item.image}
-            />
-            </li>
+          {selectedIngredients.map(item => (
+            <ConstructorIngredient key={item.uuid} ingredient={item} />
           ))}
         </ul>
-        <div className={`${style.constructor__element} pl-10 pr-3`}>
+        }
+        {selectedBun && 
+        <div className={`${style.constructor__element} pl-10 pr-1`}>
           <ConstructorElement
             type="bottom"
             isLocked={true}
-            text={exampleBun.name + ' (низ)'}
-            price={exampleBun.price}
-            thumbnail={exampleBun.image}
+            text={selectedBun.name + ' (низ)'}
+            price={selectedBun.price}
+            thumbnail={selectedBun.image}
           />
         </div>
+        }
       </div>
-      }
       <div className={style.checkout}>
         <div className={`${style.price} pr-10`}>
-          <p className="text text_type_digits-medium pr-2">{totalPriceState.price}</p>
+          <p className="text text_type_digits-medium pr-2">{totalPrice}</p>
           <CurrencyIcon type="primary" />
         </div>
         <Button type="primary" size="large" onClick={onOpenModalOrder}>
@@ -108,15 +91,9 @@ const BurgerConstructor = ({onOpenModalOrder}) => {
     </section>
   );
 }
+
 BurgerConstructor.propTypes = {
-  data: PropTypes.arrayOf(menuItemPropTypes.isRequired),
   onOpenModalOrder: PropTypes.func.isRequired,
-};
-ConstructorElement.propTypes = {
-  isLocked: PropTypes.bool,
-  text: PropTypes.string,
-  price: PropTypes.number,
-  thumbnail: PropTypes.string,
 };
 
 export default BurgerConstructor;
