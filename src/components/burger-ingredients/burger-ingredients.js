@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDrag } from "react-dnd";
 import PropTypes from 'prop-types';
@@ -11,6 +12,8 @@ import { dataFilter } from '../../utils/filter';
 import style from './burger-ingredients.module.css';
 
 const Ingredient = ({ingredient, isOpenModal}) => {
+  const location = useLocation();
+
 	const [, dragRef] = useDrag({
 		type: "ingredient",
 		item: ingredient
@@ -18,15 +21,23 @@ const Ingredient = ({ingredient, isOpenModal}) => {
 
   return (
     <li ref={dragRef} className={style.item} onClick={() => isOpenModal(ingredient)}>
-      <div className={`${style.item} pt-4 pr-3 pb-4 pl-3`}>
-        {ingredient.count>0 && <Counter count={ingredient.count} size="default" />}
-        <img src={ingredient.image} alt={ingredient.name} className='pl-4 pr-4'></img>
-        <div className={`${style.price} pt-1 pb-1`}>
-          <p className='text text_type_main-default pr-2'>{ingredient.price}</p>
-          <CurrencyIcon type="primary" />
+      <Link
+        className={style.link}
+        to={{
+          pathname: `/ingredients/${ingredient._id}`,
+          state: { background: location },
+        }}
+      >
+        <div className={`${style.item} pt-4 pr-3 pb-4 pl-3`}>
+          {ingredient.count>0 && <Counter count={ingredient.count} size="default" />}
+          <img src={ingredient.image} alt={ingredient.name} className='pl-4 pr-4'></img>
+          <div className={`${style.price} pt-1 pb-1`}>
+            <p className='text text_type_main-default pr-2'>{ingredient.price}</p>
+            <CurrencyIcon type="primary" />
+          </div>
+          <p className={`${style.item__p} text text_type_main-small`}>{ingredient.name}</p>
         </div>
-        <p className={`${style.item__p} text text_type_main-small`}>{ingredient.name}</p>
-      </div>
+      </Link>
     </li>
   )
 };
@@ -58,7 +69,7 @@ const BurgerIngredients = ({onOpenModalIngredient}) => {
   }
 
   return (
-    <section className={`${style.section} pt-5 pr-5 pb-30`}>
+    <section className={`${style.section} pt-5 pr-5`}>
       <h1 className='text text_type_main-large pt-5 pb-5'>
         Соберите бургер
       </h1>

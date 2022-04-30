@@ -27,3 +27,11 @@
     margin-bottom: auto;
     padding-top: 8px;
 }
+.nav {
+    color: #8585ad;
+    text-decoration-line: none;
+}
+.navActive {
+    color: #fff;
+    text-decoration-line: none;
+}

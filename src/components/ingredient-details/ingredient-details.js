@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import Modal from '../../components/modal/modal';
@@ -7,6 +9,15 @@ import { menuItemPropTypes } from '../../utils/types';
 import style from './ingredient-details.module.css';
 
 const IngredientDetails = ({onClose, ingredient}) => {
+  const dataState = useSelector(state => state.ingredients);
+  const { id } = useParams();
+
+  const ingredients = dataState.data;
+	console.log('ingredients ' + JSON.stringify(ingredients));
+  if (!ingredient) {
+    ingredient = ingredients.find((item) => item._id === id);
+  }
+
   return (
 		<Modal onClose={onClose}>
 			<div className={style.modal}>

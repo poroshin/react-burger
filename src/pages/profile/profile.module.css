@@ -1,0 +1,41 @@
+.main {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    /* width: 480px; */
+    margin: 120px auto 0 auto;
+    justify-content: space-evenly;
+}
+.main__start {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 400px;
+    justify-content: flex-start;
+}
+.main__end {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 400px;
+    justify-content: flex-start;
+}
+.link {
+    color: #4C4CFF;
+    text-decoration-line: none;
+}
+.column {
+    display: flex;
+    flex-direction: column;
+}
+.nav {
+    height: 64px;
+    text-decoration-line: none;
+    color: #8585AD;
+}
+.activeNav {
+    height: 64px;
+    text-decoration-line: none;
+    color: #FFFFFF;
+}
+.navText {
+    margin-top: 16px;
+}
