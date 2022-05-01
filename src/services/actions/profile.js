@@ -1,3 +1,6 @@
+import { tokenRequest } from '../api';
+import { setCookie } from '../../utils/cookie';
+
 export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const AUTH_FAILED = 'AUTH_FAILED';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
@@ -8,6 +11,22 @@ export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS';
 export const FORGOT_PASSWORD_SUCCESS = 'FORGOT_PASSWORD_SUCCESS';
 export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
 export const SET_USER_SUCCESS = 'SET_USER_SUCCESS';
+
+export const updateToken = () => {
+  return function(dispatch) {
+    dispatch(authRequest);
+    tokenRequest().then(data => {
+      dispatch(tokenSuccess(data));
+      let accessToken = data.accessToken.split('Bearer ')[1];
+      setCookie('accessToken', accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+    })
+    .catch(e => {
+      console.log(e);
+      dispatch(authFailed);
+    })
+  };
+}
 
 export const authRequest = () => {
   return function(dispatch) {

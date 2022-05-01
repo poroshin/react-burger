@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Redirect, Link, useHistory, useLocation } from 'react-router-dom';
 import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { registerRequest } from '../../services/api';
@@ -10,8 +10,11 @@ import { setCookie } from '../../utils/cookie';
 import style from './register.module.css';
 
 const RegisterPage = () => {
+  const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
+  const profile = useSelector(state => state.profile);
+  const token = localStorage.getItem('refreshToken');
 
 	const [form, setValue] = useState({ name: '', email: '', password: '' });
 	
@@ -26,8 +29,8 @@ const RegisterPage = () => {
 			dispatch(authRequest);
 			registerRequest(form).then(data => {
 				dispatch(registerSuccess(data));
-				let authToken = data.accessToken.split('Bearer ')[1];
-				setCookie('token', authToken);
+				let accessToken = data.accessToken.split('Bearer ')[1];
+				setCookie('accessToken', accessToken);
 				localStorage.setItem('refreshToken', data.refreshToken);
 				history.replace({ pathname: '/profile' });
 			})
@@ -35,10 +38,13 @@ const RegisterPage = () => {
 				console.log(e);
 				dispatch(authFailed);
 			})
-      // auth.signIn(form);
     },
     [form]
   );
+
+	if(profile.isLoggedIn && token){
+    return <Redirect to={location.state?.from || '/profile'} />;
+	}
 
   return (
 		<main className={style.main}>

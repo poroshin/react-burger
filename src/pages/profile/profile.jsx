@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useHistory } from 'react-router-dom';
-import { Input, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
+import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { logoutRequest, getUserRequest, setUserRequest } from '../../services/api';
-import { authRequest, authFailed, logoutSuccess, getUserSuccess, setUserSuccess } from '../../services/actions/profile';
-import { deleteCookie } from '../../utils/cookie';
+import { logoutRequest, setUserRequest, tokenRequest } from '../../services/api';
+import { authRequest, authFailed, logoutSuccess, getUserSuccess, setUserSuccess, updateToken, tokenSuccess } from '../../services/actions/profile';
+import { setCookie, deleteCookie } from '../../utils/cookie';
 
 import style from './profile.module.css';
 
@@ -14,6 +14,7 @@ const ProfilePage = () => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.profile);
 
+  const [isEdited, setIsEdited] = useState(false);
 	const [form, setValue] = useState({ name: '', email: '', password: '' });
 
   useEffect(() => {
@@ -26,6 +27,20 @@ const ProfilePage = () => {
       dispatch(setUserSuccess(data));
     })
     .catch(e => {
+      if (e == 403) {
+        dispatch(authRequest);
+        tokenRequest().then(data => {
+          dispatch(tokenSuccess(data));
+          let accessToken = data.accessToken.split('Bearer ')[1];
+          setCookie('accessToken', accessToken);
+          localStorage.setItem('refreshToken', data.refreshToken);
+          setUser(form);
+        })
+        .catch(e => {
+          console.log(e);
+          dispatch(authFailed);
+        })
+      }
       console.log(e);
       dispatch(authFailed);
     })
@@ -42,7 +57,7 @@ const ProfilePage = () => {
 			dispatch(authRequest);
 			logoutRequest().then(data => {
 				dispatch(logoutSuccess(data));
-        deleteCookie('token');
+        deleteCookie('accessToken');
 				localStorage.removeItem('refreshToken');
 				history.replace({ pathname: '/login' });
 			})
@@ -50,28 +65,22 @@ const ProfilePage = () => {
 				console.log(e);
 				dispatch(authFailed);
 			})
-      // auth.signIn(form);
     },
     [form]
   );
-  
-  const [focusOnName, setFocusOnName] = useState(false);
-  const [focusOnEmail, setFocusOnEmail] = useState(false);
 
-  const onClickEditName = () => {
-    setFocusOnName(true);
+  const onClickEdit = () => {
+    setIsEdited(true);
   }
 
-  const onClickEditEmail = () => {
-    setFocusOnEmail(true);
+  const onSave = () => {
+    setUser({ name: form.name, email: form.email });
+    setIsEdited(false);
   }
 
-  const onClickEditPass = () => {
-  }
-  
-  const onBlur = () => {
-    setFocusOnName(false);
-    setFocusOnEmail(false);
+  const onCancel = () => {
+    setIsEdited(false);
+    setValue({ name: profile.user.name, email: profile.user.email });
   }
 
   return (
@@ -111,11 +120,10 @@ const ProfilePage = () => {
             placeholder={'Имя'}
             onChange={onChange}
             icon={'EditIcon'}
-            onIconClick={onClickEditName}
-            onBlur={onBlur}
+            onIconClick={onClickEdit}
             errorText={'Ошибка'}
             size={'default'}
-            disabled={!focusOnName}
+            disabled={!isEdited}
           />
         </div>
         <div className='pt-6'>
@@ -125,22 +133,35 @@ const ProfilePage = () => {
             placeholder={'E-mail'}
             onChange={onChange}
             icon={'EditIcon'}
-            onIconClick={onClickEditEmail}
-            onBlur={onBlur}
+            onIconClick={onClickEdit}
             errorText={'Ошибка'}
             size={'default'}
-            disabled={!focusOnEmail}
+            disabled={!isEdited}
           />
         </div>
         <div className='pt-6'>
-          <PasswordInput 
+          <Input
             name='password'
             value={form.password}
             placeholder={'Пароль'}
-            onIconClick={onClickEditPass}
             onChange={onChange}
+            icon={'EditIcon'}
+            onIconClick={onClickEdit}
+            errorText={'Ошибка'}
+            size={'default'}
+            disabled={!isEdited}
           />
         </div>
+        {isEdited && (
+        <div className='pt-6'>
+          <Button type="primary" size="medium" onClick={onSave}>
+            Сохранить
+          </Button>
+          <Button type="secondary" size="medium" onClick={onCancel}>
+            Отмена
+          </Button>
+        </div>
+        )}
       </div>
       <div className={style.main__end}></div>
 		</main>

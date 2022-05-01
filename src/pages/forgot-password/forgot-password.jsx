@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Redirect, Link, useHistory, useLocation } from 'react-router-dom';
 import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { forgotPasswordRequest } from '../../services/api';
@@ -9,8 +9,11 @@ import { authRequest, authFailed, forgotPasswordSuccess } from '../../services/a
 import style from './forgot-password.module.css';
 
 const ForgotPasswordPage = () => {
+  const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
+  const profile = useSelector(state => state.profile);
+  const token = localStorage.getItem('refreshToken');
 
 	const [form, setValue] = useState({ email: '' });
 	
@@ -31,10 +34,13 @@ const ForgotPasswordPage = () => {
 				console.log(e);
 				dispatch(authFailed);
 			})
-      // auth.signIn(form);
     },
     [form]
   );
+
+	if(profile.isLoggedIn && token){
+    return <Redirect to={location.state?.from || '/'} />;
+	}
 
   return (
 		<main className={style.main}>

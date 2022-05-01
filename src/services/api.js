@@ -5,7 +5,7 @@ export const checkResponse = (res) => {
   if(res.ok){
     return res.json();
   }else{
-    return Promise.reject(`Ошибка ${res.status}`);
+    return Promise.reject(`${res.status}`);
   }
 }
 
@@ -25,8 +25,7 @@ export const getOrderRequest = async (selectedIngredients) => {
   return await fetch(`${baseUrl}/orders`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json;charset=utf-8',
-      Authorization: 'Bearer ' + getCookie('token')
+			'Content-Type': 'application/json;charset=utf-8'
 		},
     body: JSON.stringify(selectedIngredients)
   }).then(checkResponse).then(checkSuccess)
@@ -78,8 +77,7 @@ export const forgotPasswordRequest = async (form) => {
   return await fetch(`${baseUrl}/password-reset`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json;charset=utf-8',
-      Authorization: 'Bearer ' + getCookie('token')
+			'Content-Type': 'application/json;charset=utf-8'
 		},
     body: JSON.stringify(form)
   }).then(checkResponse).then(checkSuccess)
@@ -89,8 +87,7 @@ export const resetPasswordRequest = async (form) => {
   return await fetch(`${baseUrl}/password-reset/reset`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json;charset=utf-8',
-      Authorization: 'Bearer ' + getCookie('token')
+			'Content-Type': 'application/json;charset=utf-8'
 		},
     body: JSON.stringify(form)
   }).then(checkResponse).then(checkSuccess)
@@ -101,7 +98,7 @@ export const getUserRequest = async () => {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',
-      Authorization: 'Bearer ' + getCookie('token')
+      Authorization: 'Bearer ' + getCookie('accessToken')
 		}
   }).then(checkResponse).then(checkSuccess)
 }
@@ -111,7 +108,7 @@ export const setUserRequest = async (form) => {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',
-      Authorization: 'Bearer ' + getCookie('token')
+      Authorization: 'Bearer ' + getCookie('accessToken')
 		},
     body: JSON.stringify(form)
   }).then(checkResponse).then(checkSuccess)

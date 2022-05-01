@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Redirect, Link, useHistory, useLocation } from 'react-router-dom';
 import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import { resetPasswordRequest } from '../../services/api';
@@ -9,8 +9,11 @@ import { authRequest, authFailed, resetPasswordSuccess } from '../../services/ac
 import style from './reset-password.module.css';
 
 const ResetPasswordPage = () => {
+  const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
+  const profile = useSelector(state => state.profile);
+  const token = localStorage.getItem('refreshToken');
 
 	const [form, setValue] = useState({ password: '', token: '' });
 	
@@ -31,10 +34,17 @@ const ResetPasswordPage = () => {
 				console.log(e);
 				dispatch(authFailed);
 			})
-      // auth.signIn(form);
     },
     [form]
   );
+
+	if(profile.isLoggedIn && token){
+    return <Redirect to={location.state?.from || '/'} />;
+	}
+
+  if (!(profile.isLoggedIn && token) && !profile.isResetPassword) {
+    return <Redirect to="/login" />;
+  }
 
   return (
 		<main className={style.main}>

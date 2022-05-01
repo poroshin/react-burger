@@ -16,6 +16,7 @@ const profileInitialState = {
 	isFailed: false,
 	isRequested: false,
   isLoggedIn: false,
+  isResetPassword: false,
 	user: {},
   token: '',
 	message: ''
@@ -33,6 +34,7 @@ export const profileReducer = (state = profileInitialState, action) => {
     case AUTH_FAILED: {
       return {
         ...state,
+        isResetPassword: false,
         isFailed: true,
         isRequested: false
       };
@@ -42,7 +44,6 @@ export const profileReducer = (state = profileInitialState, action) => {
         ...state,
         isLoggedIn: true,
         user: action.data.user,
-        token: action.data.accessToken,
         message: action.data.message,
         isLoaded: true,
         isRequested: false
@@ -53,7 +54,6 @@ export const profileReducer = (state = profileInitialState, action) => {
         ...state,
         isLoggedIn: true,
         user: action.data.user,
-        token: action.data.accessToken,
         message: action.data.message,
         isLoaded: true,
         isRequested: false
@@ -71,8 +71,8 @@ export const profileReducer = (state = profileInitialState, action) => {
     case RESET_PASSWORD_SUCCESS: {
       return {
         ...state,
-        token: action.data.accessToken,
         message: action.data.message,
+        isResetPassword: false,
         isLoaded: true,
         isRequested: false
       };
@@ -80,8 +80,8 @@ export const profileReducer = (state = profileInitialState, action) => {
     case FORGOT_PASSWORD_SUCCESS: {
       return {
         ...state,
-        token: action.data.accessToken,
         message: action.data.message,
+        isResetPassword: true,
         isLoaded: true,
         isRequested: false
       };
