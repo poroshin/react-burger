@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useHistory } from 'react-router-dom';
 import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import { TRootState } from '../../services/reducers';
+import { TUserForm, TForm } from '../../services/types';
 import { logoutRequest, setUserRequest, tokenRequest } from '../../services/api';
 import { authRequest, authFailed, logoutSuccess, getUserSuccess, setUserSuccess, updateToken, tokenSuccess } from '../../services/actions/profile';
 import { setCookie, deleteCookie } from '../../utils/cookie';
@@ -12,16 +14,16 @@ import style from './profile.module.css';
 const ProfilePage = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const profile = useSelector((state) => state.profile);
+  const profile: any = useSelector<TRootState>((state) => state.profile);
 
   const [isEdited, setIsEdited] = useState(false);
-	const [form, setValue] = useState({ name: '', email: '', password: '' });
+	const [form, setValue] = useState<TForm>({ name: '', email: '', password: '' });
 
   useEffect(() => {
-    setValue({ name: profile.user.name, email: profile.user.email });
+    setValue({ name: profile.user.name, email: profile.user.email, password: '' });
   }, []);
 	
-  const setUser = (form) => {
+  const setUser = (form: TUserForm) => {
     dispatch(authRequest);
     setUserRequest(form).then(data => {
       dispatch(setUserSuccess(data));
@@ -30,7 +32,7 @@ const ProfilePage = () => {
       if (e == 403) {
         dispatch(authRequest);
         tokenRequest().then(data => {
-          dispatch(tokenSuccess(data));
+          dispatch(tokenSuccess());
           let accessToken = data.accessToken.split('Bearer ')[1];
           setCookie('accessToken', accessToken);
           localStorage.setItem('refreshToken', data.refreshToken);
@@ -46,7 +48,7 @@ const ProfilePage = () => {
     })
   };
 	
-  const onChange = e => {
+  const onChange = (e: { target: { name: any; value: any; }; }) => {
     setValue({ ...form, [e.target.name]: e.target.value });
   };
 	
@@ -80,7 +82,7 @@ const ProfilePage = () => {
 
   const onCancel = () => {
     setIsEdited(false);
-    setValue({ name: profile.user.name, email: profile.user.email });
+    setValue({ name: profile.user.name, email: profile.user.email, password: '' });
   }
 
   return (

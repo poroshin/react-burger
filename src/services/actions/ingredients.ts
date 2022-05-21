@@ -1,3 +1,4 @@
+import { TAuth, TIngredient } from '../types';
 import { getIngredientsRequest } from '../api';
 
 export const GET_INGREDIENTS_REQUEST = 'GET_INGREDIENTS_REQUEST';
@@ -9,7 +10,7 @@ export const SET_BUN_COUNT = 'SET_BUN_COUNT';
 export const DELETE_BUN_COUNT = 'DELETE_BUN_COUNT';
 
 export const getIngredients = () => {
-  return function(dispatch) {
+  return function(dispatch: (arg0: { type: string; data?: TAuth; }) => void) {
     dispatch({
       type: GET_INGREDIENTS_REQUEST
     });
@@ -28,21 +29,21 @@ export const getIngredients = () => {
   };
 }
 
-export const increaseIngredientCount = (ingredient) => {
+export const increaseIngredientCount = (ingredient: TIngredient) => {
 	return {
 		type: INCREASE_INGREDIENT_COUNT,
 		ingredient: ingredient
 	}
 }
 
-export const decreaseIngredientCount = (ingredient) => {
+export const decreaseIngredientCount = (ingredient: TIngredient) => {
 	return {
 		type: DECREASE_INGREDIENT_COUNT,
 		ingredient: ingredient
 	}
 }
 
-export const setBunCount = (ingredient) => {
+export const setBunCount = (ingredient: TIngredient) => {
 	return {
 		type: SET_BUN_COUNT,
 		ingredient: ingredient

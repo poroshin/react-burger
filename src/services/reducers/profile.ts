@@ -1,3 +1,5 @@
+import { TReducerProfile } from '../types';
+
 import {
   AUTH_REQUEST,
   AUTH_FAILED,
@@ -22,7 +24,7 @@ const profileInitialState = {
 	message: ''
 };
 
-export const profileReducer = (state = profileInitialState, action) => {
+export const profileReducer = (state = profileInitialState, action: TReducerProfile) => {
   switch (action.type) {
     case AUTH_REQUEST: {
       return {
@@ -91,7 +93,6 @@ export const profileReducer = (state = profileInitialState, action) => {
         ...state,
         isLoggedIn: true,
 				user: {},
-        message: action.data.message,
         isLoaded: true,
         isRequested: false
 			};

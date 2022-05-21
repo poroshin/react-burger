@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Redirect, Link, useHistory, useLocation } from 'react-router-dom';
 import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import { TRootState } from '../../services/reducers';
+import { TLocation } from '../../services/types';
 import { registerRequest } from '../../services/api';
 import { authRequest, authFailed, registerSuccess } from '../../services/actions/profile';
 import { setCookie } from '../../utils/cookie';
@@ -10,15 +12,15 @@ import { setCookie } from '../../utils/cookie';
 import style from './register.module.css';
 
 const RegisterPage = () => {
-  const location = useLocation();
+  const location: TLocation = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const profile = useSelector(state => state.profile);
+  const profile: any = useSelector<TRootState>(state => state.profile);
   const token = localStorage.getItem('refreshToken');
 
 	const [form, setValue] = useState({ name: '', email: '', password: '' });
 	
-  const onChange = e => {
+  const onChange = (e: { target: { name: any; value: any; }; }) => {
     setValue({ ...form, [e.target.name]: e.target.value });
   };
 	
@@ -72,7 +74,6 @@ const RegisterPage = () => {
 			<div className='pt-6'>
 				<PasswordInput 
 					name='password'
-					placeholder={'Пароль'}
 					value={form.password}
 					onChange={onChange}
 				/>

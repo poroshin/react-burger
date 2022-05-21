@@ -10,3 +10,5 @@ export const rootReducer = combineReducers({
 	order: orderReducer,
 	profile: profileReducer
 });
+
+export type TRootState = ReturnType<typeof rootReducer>;

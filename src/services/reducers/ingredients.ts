@@ -1,3 +1,5 @@
+import { TIngredient } from '../types';
+
 import {
 	GET_INGREDIENTS_REQUEST,
 	GET_INGREDIENTS_FAILED,
@@ -15,7 +17,7 @@ const ingredientsInitialState = {
 	data: []
 };
 
-export const ingredientsReducer = (state = ingredientsInitialState, action) => {
+export const ingredientsReducer = (state = ingredientsInitialState, action: { type: string; data: Array<TIngredient>; ingredient: TIngredient; }) => {
   switch (action.type) {
     case GET_INGREDIENTS_REQUEST: {
       return {
@@ -44,7 +46,7 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
     case INCREASE_INGREDIENT_COUNT: {
       return {
         ...state,
-        data: [...state.data].map(item =>
+        data: [...state.data].map((item: TIngredient) =>
           item._id === action.ingredient._id ? { ...item, count: ++item.count } : item
         )
       };
@@ -52,7 +54,7 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
     case DECREASE_INGREDIENT_COUNT: {
       return {
         ...state,
-        data: [...state.data].map(item =>
+        data: [...state.data].map((item: TIngredient) =>
           item._id === action.ingredient._id ? { ...item, count: --item.count } : item
         )
       };
@@ -60,7 +62,7 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
     case SET_BUN_COUNT: {
       return {
         ...state,
-        data: [...state.data].map(item =>
+        data: [...state.data].map((item: TIngredient) =>
           item._id === action.ingredient._id ? { ...item, count: 2 } : item
         )
       };
@@ -68,7 +70,7 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
     case DELETE_BUN_COUNT: {
       return {
         ...state,
-        data: [...state.data].map(item =>
+        data: [...state.data].map((item: TIngredient) =>
           item.type === 'bun' ? { ...item, count: 0 } : item
         )
       };
