@@ -1,0 +1,12 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: 480px;
+    margin: 180px auto 0 auto;
+}
+.loading {
+    text-align: center;
+    font-size: 16px;
+    color: #5f5f70;
+}

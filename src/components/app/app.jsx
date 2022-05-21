@@ -1,62 +1,109 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 
-import AppHeader from '../app-header/app-header';
-import BurgerIngredients from '../burger-ingredients/burger-ingredients';
-import BurgerConstructor from '../burger-constructor/burger-constructor';
-import IngredientDetails from '../ingredient-details/ingredient-details';
-import OrderDetails from '../order-details/order-details';
+import { getCookie, setCookie } from '../../utils/cookie';
 import { getIngredients } from '../../services/actions/ingredients';
-import { getOrder } from '../../services/actions/order';
+import { getUserRequest, tokenRequest } from '../../services/api';
+import { authRequest, authFailed, getUserSuccess, tokenSuccess } from '../../services/actions/profile';
+import { ProtectedRoute } from '../protected-route';
+import AppHeader from '../app-header/app-header';
+import Loading from '../loading/loading';
+import Modal from '../../components/modal/modal';
+import IngredientDetails from '../../components/ingredient-details/ingredient-details';
 
-import style from './app.module.css';
+import HomePage from '../../pages/home/home';
+import NotFound404 from '../../pages/not-found/not-found';
+import LoginPage from '../../pages/login/login';
+import RegisterPage from '../../pages/register/register';
+import ForgotPasswordPage from '../../pages/forgot-password/forgot-password';
+import ResetPasswordPage from '../../pages/reset-password/reset-password';
+import ProfilePage from '../../pages/profile/profile';
+import IngredientPage from '../../pages/ingredients/ingredients';
 
 const App = () => {
-  const dispatch = useDispatch();
-  const selectedBun = useSelector(state => state.selectedIngredients.bun);
-  const selectedIngredients = useSelector(state => state.selectedIngredients.data);
+  let location = useLocation();
+  const history = useHistory();
 
-  const [modal, setModal] = useState({
-    isOpenIngredientDetails: false,
-    isOpenOrderDetails: false,
-  });
-  const [ingredient, setIngredient] = useState(null);
+  const dispatch = useDispatch();
+  const dataState = useSelector(state => state.ingredients);
   
   useEffect(() => {
     dispatch(getIngredients());
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    dispatch(authRequest);
+    getUserRequest().then(data => {
+      dispatch(getUserSuccess(data));
+    })
+    .catch(e => {
+      if (e == 403) {
+        dispatch(authRequest);
+        tokenRequest().then(data => {
+          dispatch(tokenSuccess(data));
+          let accessToken = data.accessToken.split('Bearer ')[1];
+          setCookie('accessToken', accessToken);
+          localStorage.setItem('refreshToken', data.refreshToken);
+
+          dispatch(authRequest);
+          getUserRequest().then(data => {
+            dispatch(getUserSuccess(data));
+          })
+        })
+        .catch(e => {
+          console.log(e);
+          dispatch(authFailed);
+        })
+      }
+      console.log(e);
+      dispatch(authFailed);
+    })
   }, [dispatch]);
 
-  const handleOpenModalOrder = () => {
-    const tempIngredientsArray = [];
-    if(selectedBun)tempIngredientsArray.push(selectedBun._id);
-    selectedIngredients.map((item, index) => {
-      tempIngredientsArray.push(item._id);
-    });
-    const ingredientsToOrder = {ingredients: tempIngredientsArray};
-    dispatch(getOrder(ingredientsToOrder));
-    setModal({ ...modal, isOpenOrderDetails: true });
-  }
-  const handleOpenModalIngredient = (ingredient) => {
-    setIngredient(ingredient);
-    setModal({ ...modal, isOpenIngredientDetails: true });
-  }
   const handleCloseModal = () => {
-    setModal({ ...modal, isOpenIngredientDetails: false, isOpenOrderDetails: false });
-  }
+    history.goBack();
+  };
   
+  let background = location.state && location.state.background;
+
   return (
     <>
       <AppHeader />
-      <main className={style.main}>
-        {modal.isOpenIngredientDetails && <IngredientDetails ingredient={ingredient} onClose={handleCloseModal} />}
-        {modal.isOpenOrderDetails && <OrderDetails onClose={handleCloseModal} />}
-        <DndProvider backend={HTML5Backend}>
-          <BurgerIngredients onOpenModalIngredient={handleOpenModalIngredient} />
-          <BurgerConstructor onOpenModalOrder={handleOpenModalOrder} />
-        </DndProvider>
-      </main>
+      <Switch location={background || location}>
+        <Route path="/" exact>
+          <HomePage />
+        </Route>
+        <Route path="/login" exact>
+          <LoginPage />
+        </Route>
+        <Route path="/register" exact>
+          <RegisterPage />
+        </Route>
+        <Route path="/forgot-password" exact>
+          <ForgotPasswordPage />
+        </Route>
+        <Route path="/reset-password" exact>
+          <ResetPasswordPage />
+        </Route>
+        <ProtectedRoute path="/profile" exact>
+          <ProfilePage />
+        </ProtectedRoute>
+        {dataState.isLoaded && (
+          <Route path="/ingredients/:id" exact>
+            <IngredientPage />
+          </Route>
+        )}
+        <Route>
+          <NotFound404 />
+        </Route>
+      </Switch>
+      {background && (
+        <Route path="/ingredients/:id">
+          <Modal onClose={handleCloseModal}>
+            <IngredientDetails />
+          </Modal>
+        </Route>
+      )}
     </>
   );
 }
