@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, FormEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect, Link, useHistory, useLocation } from 'react-router-dom';
 import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -20,12 +20,12 @@ const RegisterPage = () => {
 
 	const [form, setValue] = useState({ name: '', email: '', password: '' });
 	
-  const onChange = (e: { target: { name: any; value: any; }; }) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue({ ...form, [e.target.name]: e.target.value });
   };
 	
-  let register = useCallback(
-    e => {
+  const register = useCallback(
+    (e: FormEvent) => {
       e.preventDefault();
 
 			dispatch(authRequest);
@@ -36,7 +36,7 @@ const RegisterPage = () => {
 				localStorage.setItem('refreshToken', data.refreshToken);
 				history.replace({ pathname: '/profile' });
 			})
-			.catch(e => {
+			.catch((e: number | string | null) => {
 				console.log(e);
 				dispatch(authFailed);
 			})
@@ -51,38 +51,40 @@ const RegisterPage = () => {
   return (
 		<main className={style.main}>
 			<h1 className='text text_type_main-medium'>Регистрация</h1>
-			<div className='pt-6'>
-				<Input
-					name='name'
-					value={form.name}
-					placeholder={'Имя'}
-					onChange={onChange}
-					errorText={'Ошибка'}
-					size={'default'}
-				/>
-			</div>
-			<div className='pt-6'>
-				<Input
-					name='email'
-					placeholder={'E-mail'}
-					onChange={onChange}
-					value={form.email}
-					errorText={'Ошибка'}
-					size={'default'}
-				/>
-			</div>
-			<div className='pt-6'>
-				<PasswordInput 
-					name='password'
-					value={form.password}
-					onChange={onChange}
-				/>
-			</div>
-			<div className='pt-6'>
-				<Button type="primary" size="large" onClick={register}>
-					Зарегистрироваться
-				</Button>
-			</div>
+			<form onSubmit={register} className={style.form}>
+				<div className='pt-6'>
+					<Input
+						name='name'
+						value={form.name}
+						placeholder={'Имя'}
+						onChange={onChange}
+						errorText={'Ошибка'}
+						size={'default'}
+					/>
+				</div>
+				<div className='pt-6'>
+					<Input
+						name='email'
+						placeholder={'E-mail'}
+						onChange={onChange}
+						value={form.email}
+						errorText={'Ошибка'}
+						size={'default'}
+					/>
+				</div>
+				<div className='pt-6'>
+					<PasswordInput 
+						name='password'
+						value={form.password}
+						onChange={onChange}
+					/>
+				</div>
+				<div className='pt-6'>
+					<Button type="primary" size="large">
+						Зарегистрироваться
+					</Button>
+				</div>
+			</form>
 			<p className='text text_type_main-default text_color_inactive pt-20'>Уже зарегистрированы? <Link to='/login' className={style.link}>Войти</Link></p>
 		</main>
   );

@@ -23,7 +23,7 @@ import ProfilePage from '../../pages/profile/profile';
 import IngredientPage from '../../pages/ingredients/ingredients';
 
 const App = () => {
-  let location: TLocation = useLocation();
+  const location: TLocation = useLocation();
   const history = useHistory();
 
   const dispatch = useDispatch();
@@ -37,7 +37,7 @@ const App = () => {
     getUserRequest().then(data => {
       dispatch(getUserSuccess(data));
     })
-    .catch(e => {
+    .catch((e: number | string | null) => {
       if (e == 403) {
         dispatch(authRequest);
         tokenRequest().then(data => {
@@ -51,7 +51,7 @@ const App = () => {
             dispatch(getUserSuccess(data));
           })
         })
-        .catch(e => {
+        .catch((e: number | string | null) => {
           console.log(e);
           dispatch(authFailed);
         })

@@ -22,7 +22,7 @@ export const updateToken = () => {
       setCookie('accessToken', accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
     })
-    .catch(e => {
+    .catch((e: number | string | null) => {
       console.log(e);
       dispatch(authFailed);
     })

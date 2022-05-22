@@ -13,7 +13,7 @@ type TModal = {
 }
 
 const Modal: FC<TModal> = ({children, onClose}) => {
-	const escCloseModal = (event: { key: string; }) => {
+	const escCloseModal = (event: KeyboardEvent) => {
 		if (event.key === 'Escape') {
 			onClose();
 		}

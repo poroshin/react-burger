@@ -12,7 +12,7 @@ const IngredientDetails = () => {
   const { id }: { id: string } = useParams();
 
   const ingredients = dataState.data;
-  let ingredient = ingredients.find((item: TIngredient) => item._id === id);
+  const ingredient = ingredients.find((item: TIngredient) => item._id === id);
 
   return (
 		<>

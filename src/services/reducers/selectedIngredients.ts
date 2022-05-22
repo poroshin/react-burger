@@ -31,6 +31,7 @@ export const selectedIngredientsReducer = (state = selectedIngredientsInitialSta
     }
     case ADD_ITEM_SELECTED_INGREDIENTS: {
       return {
+        ...state,
         data: [...state.data, action.ingredient]
       };
     }

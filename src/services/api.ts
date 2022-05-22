@@ -7,7 +7,7 @@ type TIngredientsToOrder = {
   ingredients: string[];
 }
 
-export const checkResponse = (res: { ok: boolean; json: () => any; status: any; }) => {
+export const checkResponse = (res: Response) => {
   if(res.ok){
     return res.json();
   }else{

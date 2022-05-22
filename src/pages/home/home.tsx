@@ -43,7 +43,7 @@ const HomePage = () => {
 				dispatch(getOrderSuccess(data));
         setModal({ ...modal, isOpenOrderDetails: true });
 			})
-			.catch(e => {
+			.catch((e: number | string | null) => {
 				console.log(e);
 				dispatch(getOrderFailed);
 			})

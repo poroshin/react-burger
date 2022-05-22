@@ -20,7 +20,7 @@ export const getIngredients = () => {
 				data: res.data
 			});
 		})
-		.catch(e => {
+		.catch((e: number | string | null) => {
 			console.log(e);
 			dispatch({
 				type: GET_INGREDIENTS_FAILED
