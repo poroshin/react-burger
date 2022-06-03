@@ -1,5 +1,6 @@
 import { tokenRequest } from '../api';
 import { setCookie } from '../../utils/cookie';
+import { TAuth } from '../types';
 
 export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const AUTH_FAILED = 'AUTH_FAILED';
@@ -13,15 +14,15 @@ export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
 export const SET_USER_SUCCESS = 'SET_USER_SUCCESS';
 
 export const updateToken = () => {
-  return function(dispatch) {
+  return function(dispatch: (arg0: { (): (dispatch: (arg0: { type: string; }) => void) => void; (dispatch: any): void; (): (dispatch: (arg0: { type: string; }) => void) => void; }) => void) {
     dispatch(authRequest);
     tokenRequest().then(data => {
-      dispatch(tokenSuccess(data));
+      dispatch(tokenSuccess);
       let accessToken = data.accessToken.split('Bearer ')[1];
       setCookie('accessToken', accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
     })
-    .catch(e => {
+    .catch((e: number | string | null) => {
       console.log(e);
       dispatch(authFailed);
     })
@@ -29,7 +30,7 @@ export const updateToken = () => {
 }
 
 export const authRequest = () => {
-  return function(dispatch) {
+  return function(dispatch: (arg0: { type: string; }) => void) {
     dispatch({
       type: AUTH_REQUEST
     });
@@ -37,15 +38,15 @@ export const authRequest = () => {
 }
 
 export const authFailed = () => {
-  return function(dispatch) {
+  return function(dispatch: (arg0: { type: string; }) => void) {
     dispatch({
       type: AUTH_FAILED
     });
   };
 }
 
-export const registerSuccess = (data) => {
-  return function(dispatch) {
+export const registerSuccess = (data: TAuth) => {
+  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
     dispatch({
       type: REGISTER_SUCCESS,
 			data: data
@@ -53,8 +54,8 @@ export const registerSuccess = (data) => {
   };
 }
 
-export const loginSuccess = (data) => {
-  return function(dispatch) {
+export const loginSuccess = (data: TAuth) => {
+  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
 		dispatch({
 			type: LOGIN_SUCCESS,
 			data: data
@@ -62,8 +63,8 @@ export const loginSuccess = (data) => {
   };
 }
 
-export const logoutSuccess = (data) => {
-  return function(dispatch) {
+export const logoutSuccess = (data: TAuth) => {
+  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
 		dispatch({
 			type: LOGOUT_SUCCESS,
 			data: data
@@ -71,17 +72,16 @@ export const logoutSuccess = (data) => {
   };
 }
 
-export const tokenSuccess = (data) => {
-  return function(dispatch) {
+export const tokenSuccess = () => {
+  return function(dispatch: (arg0: { type: string; }) => void) {
 		dispatch({
-			type: TOKEN_SUCCESS,
-			data: data
+			type: TOKEN_SUCCESS
 		});
   };
 }
 
-export const resetPasswordSuccess = (data) => {
-  return function(dispatch) {
+export const resetPasswordSuccess = (data: TAuth) => {
+  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
 		dispatch({
 			type: RESET_PASSWORD_SUCCESS,
 			data: data
@@ -89,8 +89,8 @@ export const resetPasswordSuccess = (data) => {
   };
 }
 
-export const forgotPasswordSuccess = (data) => {
-  return function(dispatch) {
+export const forgotPasswordSuccess = (data: TAuth) => {
+  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
 		dispatch({
 			type: FORGOT_PASSWORD_SUCCESS,
 			data: data
@@ -98,8 +98,8 @@ export const forgotPasswordSuccess = (data) => {
   };
 }
 
-export const getUserSuccess = (data) => {
-  return function(dispatch) {
+export const getUserSuccess = (data: TAuth) => {
+  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
 		dispatch({
 			type: LOGIN_SUCCESS,
 			data: data
@@ -107,8 +107,8 @@ export const getUserSuccess = (data) => {
   };
 }
 
-export const setUserSuccess = (data) => {
-  return function(dispatch) {
+export const setUserSuccess = (data: TAuth) => {
+  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
 		dispatch({
 			type: LOGIN_SUCCESS,
 			data: data

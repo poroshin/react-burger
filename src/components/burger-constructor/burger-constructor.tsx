@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDrop } from "react-dnd";
-import PropTypes from 'prop-types';
 import { ConstructorElement, Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { v4 as uuidv4 } from 'uuid';
 
+import { TIngredient } from '../../services/types';
 import { ConstructorIngredient } from '../constructor-ingredient/constructor-ingredient';
 import { labels } from '../../utils/constants';
 import { setBunSelectedIngredients, addItemSelectedIngredients } from '../../services/actions/selectedIngredients';
@@ -13,22 +13,26 @@ import { setTotalPrice, deleteTotalPrice } from '../../services/actions/order';
 
 import style from './burger-constructor.module.css';
 
-const BurgerConstructor = ({onOpenModalOrder}) => {
+type TBurgerConstructor = {
+  onOpenModalOrder: () => void;
+}
+
+const BurgerConstructor = ({onOpenModalOrder}: TBurgerConstructor) => {
   const dispatch = useDispatch();
-  const selectedBun = useSelector(state => state.selectedIngredients.bun);
-  const selectedIngredients = useSelector(state => state.selectedIngredients.data);
-  const totalPrice = useSelector(state => state.order.totalPrice);
+  const selectedBun: any = useSelector<any>(state => state.selectedIngredients.bun);
+  const selectedIngredients: any = useSelector<any>(state => state.selectedIngredients.data);
+  const totalPrice: any = useSelector<any>(state => state.order.totalPrice);
 
 	const [, dropRef] = useDrop({
 		accept: 'ingredient',
-		drop(item) {
+		drop(item: TIngredient) {
       if(item.type === labels.bun){
         dispatch(setBunSelectedIngredients(item));
         dispatch(deleteBunCount());
         dispatch(setBunCount(item));
       }else{
         item.uuid = uuidv4();
-        dispatch(addItemSelectedIngredients(item, uuidv4()));
+        dispatch(addItemSelectedIngredients(item));
         dispatch(increaseIngredientCount(item));
       }
 		}
@@ -40,7 +44,7 @@ const BurgerConstructor = ({onOpenModalOrder}) => {
       dispatch(setTotalPrice(selectedBun.price * 2));
     }
     if(selectedIngredients){
-      selectedIngredients.map((item, index) => {
+      selectedIngredients.map((item: TIngredient, index: number) => {
         dispatch(setTotalPrice(item.price));
       });
     }
@@ -62,7 +66,7 @@ const BurgerConstructor = ({onOpenModalOrder}) => {
         }
         {selectedIngredients && 
         <ul className={style.ingredients}>
-          {selectedIngredients.map(item => (
+          {selectedIngredients.map((item: TIngredient) => (
             <ConstructorIngredient key={item.uuid} ingredient={item} />
           ))}
         </ul>
@@ -91,9 +95,5 @@ const BurgerConstructor = ({onOpenModalOrder}) => {
     </section>
   );
 }
-
-BurgerConstructor.propTypes = {
-  onOpenModalOrder: PropTypes.func.isRequired,
-};
 
 export default BurgerConstructor;

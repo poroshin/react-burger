@@ -2,15 +2,16 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 
+import { TRootState } from '../../services/reducers';
+import { TLocation } from '../../services/types';
 import { getCookie, setCookie } from '../../utils/cookie';
 import { getIngredients } from '../../services/actions/ingredients';
 import { getUserRequest, tokenRequest } from '../../services/api';
 import { authRequest, authFailed, getUserSuccess, tokenSuccess } from '../../services/actions/profile';
 import { ProtectedRoute } from '../protected-route';
 import AppHeader from '../app-header/app-header';
-import Loading from '../loading/loading';
-import Modal from '../../components/modal/modal';
-import IngredientDetails from '../../components/ingredient-details/ingredient-details';
+import Modal from '../modal/modal';
+import IngredientDetails from '../ingredient-details/ingredient-details';
 
 import HomePage from '../../pages/home/home';
 import NotFound404 from '../../pages/not-found/not-found';
@@ -22,11 +23,11 @@ import ProfilePage from '../../pages/profile/profile';
 import IngredientPage from '../../pages/ingredients/ingredients';
 
 const App = () => {
-  let location = useLocation();
+  const location: TLocation = useLocation();
   const history = useHistory();
 
   const dispatch = useDispatch();
-  const dataState = useSelector(state => state.ingredients);
+  const dataState: any = useSelector<TRootState>(state => state.ingredients);
   
   useEffect(() => {
     dispatch(getIngredients());
@@ -36,11 +37,11 @@ const App = () => {
     getUserRequest().then(data => {
       dispatch(getUserSuccess(data));
     })
-    .catch(e => {
+    .catch((e: number | string | null) => {
       if (e == 403) {
         dispatch(authRequest);
         tokenRequest().then(data => {
-          dispatch(tokenSuccess(data));
+          dispatch(tokenSuccess());
           let accessToken = data.accessToken.split('Bearer ')[1];
           setCookie('accessToken', accessToken);
           localStorage.setItem('refreshToken', data.refreshToken);
@@ -50,7 +51,7 @@ const App = () => {
             dispatch(getUserSuccess(data));
           })
         })
-        .catch(e => {
+        .catch((e: number | string | null) => {
           console.log(e);
           dispatch(authFailed);
         })

@@ -1,7 +1,13 @@
 import { baseUrl } from '../utils/constants';
 import { getCookie } from '../utils/cookie';
+import { TUserForm, TIngredient } from '../services/types';
+import { TAuth } from '../services/types';
 
-export const checkResponse = (res) => {
+type TIngredientsToOrder = {
+  ingredients: string[];
+}
+
+export const checkResponse = (res: Response) => {
   if(res.ok){
     return res.json();
   }else{
@@ -9,7 +15,12 @@ export const checkResponse = (res) => {
   }
 }
 
-export const checkSuccess = (res) => {
+export const checkSuccess = (res: {
+	data: TAuth;
+  refreshToken: string; 
+  accessToken: string; 
+  success: boolean; 
+}) => {
   if(res.success){
     return res;
   }else{
@@ -21,7 +32,7 @@ export const getIngredientsRequest = async () => {
   return await fetch(`${baseUrl}/ingredients`).then(checkResponse).then(checkSuccess)
 }
 
-export const getOrderRequest = async (selectedIngredients) => {
+export const getOrderRequest = async (selectedIngredients: TIngredientsToOrder) => {
   return await fetch(`${baseUrl}/orders`, {
 		method: 'POST',
 		headers: {
@@ -31,7 +42,7 @@ export const getOrderRequest = async (selectedIngredients) => {
   }).then(checkResponse).then(checkSuccess)
 }
 
-export const registerRequest = async (form) => {
+export const registerRequest = async (form: TUserForm) => {
   return await fetch(`${baseUrl}/auth/register`, {
 		method: 'POST',
 		headers: {
@@ -41,7 +52,7 @@ export const registerRequest = async (form) => {
   }).then(checkResponse).then(checkSuccess)
 }
 
-export const loginRequest = async (form) => {
+export const loginRequest = async (form: TUserForm) => {
   return await fetch(`${baseUrl}/auth/login`, {
 		method: 'POST',
 		headers: {
@@ -62,7 +73,7 @@ export const logoutRequest = async () => {
   }).then(checkResponse).then(checkSuccess)
 }
 
-export const tokenRequest = async (form) => {
+export const tokenRequest = async () => {
   const token = localStorage.getItem('refreshToken');
   return await fetch(`${baseUrl}/auth/token`, {
 		method: 'POST',
@@ -73,7 +84,7 @@ export const tokenRequest = async (form) => {
   }).then(checkResponse).then(checkSuccess)
 }
 
-export const forgotPasswordRequest = async (form) => {
+export const forgotPasswordRequest = async (form: TUserForm) => {
   return await fetch(`${baseUrl}/password-reset`, {
 		method: 'POST',
 		headers: {
@@ -83,7 +94,7 @@ export const forgotPasswordRequest = async (form) => {
   }).then(checkResponse).then(checkSuccess)
 }
 
-export const resetPasswordRequest = async (form) => {
+export const resetPasswordRequest = async (form: TUserForm) => {
   return await fetch(`${baseUrl}/password-reset/reset`, {
 		method: 'POST',
 		headers: {
@@ -103,7 +114,7 @@ export const getUserRequest = async () => {
   }).then(checkResponse).then(checkSuccess)
 }
 
-export const setUserRequest = async (form) => {
+export const setUserRequest = async (form: TUserForm) => {
   return await fetch(`${baseUrl}/auth/user`, {
 		method: 'PATCH',
 		headers: {

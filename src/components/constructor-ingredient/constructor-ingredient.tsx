@@ -3,15 +3,19 @@ import { useDispatch } from 'react-redux';
 import { useDrag, useDrop } from "react-dnd";
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import { TIngredient } from '../../services/types';
 import { deleteItemSelectedIngredients, sortIngredients } from '../../services/actions/selectedIngredients';
 import { decreaseIngredientCount } from '../../services/actions/ingredients';
-import { menuItemPropTypes } from '../../utils/types';
 
 import style from './constructor-ingredient.module.css';
 
-export const ConstructorIngredient = ({ingredient}) => {
+type TIngredientItem = {
+	ingredient: TIngredient;
+}
+
+export const ConstructorIngredient = ({ingredient}: TIngredientItem) => {
 	const dispatch = useDispatch();
-	const ref = useRef();
+	const ref = useRef<HTMLLIElement>(null);
 
 	const [, dragRef] = useDrag({
 		type: 'sort',
@@ -20,7 +24,7 @@ export const ConstructorIngredient = ({ingredient}) => {
 
 	const [, dropRef] = useDrop({
 		accept: 'sort',
-		drop(draggedIngredient) {
+		drop(draggedIngredient: TIngredient) {
 			dispatch(sortIngredients(ingredient, draggedIngredient));
 		}
 	});
@@ -44,9 +48,5 @@ export const ConstructorIngredient = ({ingredient}) => {
 		</li>
 	)
 }
-
-ConstructorElement.propTypes = {
-  ingredient: menuItemPropTypes
-};
 
 export default ConstructorIngredient;

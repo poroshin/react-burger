@@ -1,3 +1,5 @@
+import { TReducerOrder } from '../types';
+
 import {
   GET_ORDER_REQUEST,
   GET_ORDER_FAILED,
@@ -15,7 +17,7 @@ const orderInitialState = {
 	orderNumber: 0
 };
 
-export const orderReducer = (state = orderInitialState, action) => {
+export const orderReducer = (state = orderInitialState, action: TReducerOrder) => {
   switch (action.type) {
     case GET_ORDER_REQUEST: {
       return {

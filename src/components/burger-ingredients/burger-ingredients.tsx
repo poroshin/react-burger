@@ -1,17 +1,26 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDrag } from "react-dnd";
-import PropTypes from 'prop-types';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import { TRootState } from '../../services/reducers';
+import { TIngredient } from '../../services/types';
 import { labels } from '../../utils/constants';
-import { menuItemPropTypes } from '../../utils/types';
 import { dataFilter } from '../../utils/filter';
 
 import style from './burger-ingredients.module.css';
 
-const Ingredient = ({ingredient, isOpenModal}) => {
+type TIngredientItem = {
+  ingredient: TIngredient;
+  isOpenModal?: (arg0: TIngredient) => void;
+}
+
+type TBurgerIngredients = {
+  onOpenModalIngredient: () => void;
+}
+
+const Ingredient: FC<TIngredientItem> = ({ingredient}) => {
   const location = useLocation();
 
 	const [, dragRef] = useDrag({
@@ -20,7 +29,7 @@ const Ingredient = ({ingredient, isOpenModal}) => {
 	});
 
   return (
-    <li ref={dragRef} className={style.item} onClick={() => isOpenModal(ingredient)}>
+    <li ref={dragRef} className={style.item}>
       <Link
         className={style.link}
         to={{
@@ -29,7 +38,7 @@ const Ingredient = ({ingredient, isOpenModal}) => {
         }}
       >
         <div className={`${style.item} pt-4 pr-3 pb-4 pl-3`}>
-          {ingredient.count>0 && <Counter count={ingredient.count} size="default" />}
+          {ingredient?.count ? ingredient?.count>0 && <Counter count={ingredient.count} size="default" /> : null}
           <img src={ingredient.image} alt={ingredient.name} className='pl-4 pr-4'></img>
           <div className={`${style.price} pt-1 pb-1`}>
             <p className='text text_type_main-default pr-2'>{ingredient.price}</p>
@@ -42,8 +51,8 @@ const Ingredient = ({ingredient, isOpenModal}) => {
   )
 };
 
-const BurgerIngredients = ({onOpenModalIngredient}) => {
-  const dataState = useSelector(state => state.ingredients);
+const BurgerIngredients = () => {
+  const dataState: any = useSelector<TRootState>(state => state.ingredients);
   
   const [currentTab, setCurrentTab] = React.useState(labels.bun);
 
@@ -63,7 +72,7 @@ const BurgerIngredients = ({onOpenModalIngredient}) => {
     }
   }
 
-  const scrollToTab = (tab) => {
+  const scrollToTab = (tab: React.SetStateAction<string>) => {
     setCurrentTab(tab);
     // document.getElementById(tab).scrollIntoView({ behavior: "smooth" }); // todo optionaly
   }
@@ -90,24 +99,24 @@ const BurgerIngredients = ({onOpenModalIngredient}) => {
           Булки
         </h2>
         <ul className={style.array}>
-          {dataFilter(dataState.data, labels.bun).map((item, index) => (
-            <Ingredient key={item._id} ingredient={item} isOpenModal={onOpenModalIngredient} />
+          {dataFilter(dataState.data, labels.bun).map((item: TIngredient, index: number) => (
+            <Ingredient key={item._id} ingredient={item} />
           ))}
         </ul>
         <h2 className='text text_type_main-medium pt-5 pb-2' id={labels.sauce}>
           Соусы
         </h2>
         <ul className={style.array}>
-          {dataFilter(dataState.data, labels.sauce).map((item, index) => (
-            <Ingredient key={item._id} ingredient={item} isOpenModal={onOpenModalIngredient} />
+          {dataFilter(dataState.data, labels.sauce).map((item: TIngredient, index: number) => (
+            <Ingredient key={item._id} ingredient={item} />
           ))}
         </ul>
         <h2 className='text text_type_main-medium pt-5 pb-2' id={labels.main}>
           Начинка
         </h2>
         <ul className={style.array}>
-          {dataFilter(dataState.data, labels.main).map((item, index) => (
-            <Ingredient key={item._id} ingredient={item} isOpenModal={onOpenModalIngredient} />
+          {dataFilter(dataState.data, labels.main).map((item: TIngredient, index: number) => (
+            <Ingredient key={item._id} ingredient={item} />
           ))}
         </ul>
       </div>
@@ -115,15 +124,5 @@ const BurgerIngredients = ({onOpenModalIngredient}) => {
     </section>
   );
 }
-BurgerIngredients.propTypes = {
-  onOpenModalIngredient: PropTypes.func.isRequired,
-};
-Ingredient.propTypes = {
-  ingredient: menuItemPropTypes.isRequired,
-  isOpenModal: PropTypes.func.isRequired,
-};
-Counter.propTypes = {
-  count: PropTypes.number,
-};
 
 export default BurgerIngredients;

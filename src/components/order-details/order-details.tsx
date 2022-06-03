@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 
-import Modal from '../../components/modal/modal';
+import { TRootState } from '../../services/reducers';
+import Modal from '../modal/modal';
 
 import style from './order-details.module.css';
 import successIcon from '../../images/graphics.svg';
 
-const OrderDetails = ({onClose}) => {
-	const orderDetail = useSelector(state => state.order);
+type TOrderDetails = {
+  onClose: () => void;
+}
+
+const OrderDetails: FC<TOrderDetails> = ({onClose}) => {
+	const orderDetail: any = useSelector<TRootState>(state => state.order);
 
   return (
 		<Modal onClose={onClose}>
@@ -21,9 +25,6 @@ const OrderDetails = ({onClose}) => {
 			</div>
 		</Modal>
   );
-}
-OrderDetails.propTypes = {
-  onClose: PropTypes.func.isRequired
 }
 
 export default OrderDetails;
