@@ -1,6 +1,30 @@
 import { ThunkAction } from "redux-thunk";
-import { Action, ActionCreator, Dispatch } from "redux";
-import { TRootState } from '../reducers';
+import { Action, ActionCreator } from "redux";
+import { store } from '../store';
+import { TIngredientsActions } from '../actions/ingredients';
+import { TOrderActions } from '../actions/order';
+import { TProfileActions } from '../actions/profile';
+import { TSelectedIngredientsActions } from '../actions/selectedIngredients';
+
+import {
+  WS_CONNECTION_START,
+  WS_CONNECTION_SUCCESS,
+  WS_CONNECTION_CLOSED,
+  WS_CONNECTION_ERROR,
+  WS_GET_ALL_ORDERS,
+  WS_GET_USER_ORDERS,
+} from '../constants';
+
+type TApplicationActions = 
+  | TIngredientsActions
+  | TOrderActions
+  | TProfileActions
+  | TSelectedIngredientsActions;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+export type AppThunk<ReturnType = void> = ActionCreator<
+  ThunkAction<ReturnType, Action, RootState, TApplicationActions>
+>;
 
 export type TReducerIngredients = {
   isLoaded: boolean;
@@ -33,26 +57,6 @@ export type TReducerOrder = {
   price: number;
   data: TOrderData;
 }
-
-export type TReducerProfile = {
-  type: string;
-  data: {
-    user: string;
-    message: string;
-  }
-}
-
-export type TProfileUser = {
-  isLoaded: boolean;
-  isFailed: boolean;
-  isRequested: boolean;
-  isLoggedIn: boolean;
-  isResetPassword: boolean;
-  user: string;
-  token: string;
-  message: string;
-}
-
 export type TIngredient = {
   readonly _id: string;
   readonly name: string;
@@ -85,6 +89,11 @@ export type TLocation = {
   key?: string;
 };
 
+export type TDataProfile = {
+  user: TUserForm;
+  message: string;
+}
+
 export type TUserForm = {
   name?: string | undefined;
   email?: string | undefined;
@@ -102,3 +111,34 @@ export type TAuth = {
   refreshToken: string;
   accessToken: string;
 }
+
+export type TOrderFeed = {
+  orders: TOrder[];
+  total: number;
+  totalToday: number;
+}
+
+export type TOrder = {
+  ingredients: string[];
+  _id: string;
+  status: string;
+  number: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type TError = {
+  success?: boolean,
+  message?: string;
+  type?: string;
+  code?: number;
+}
+
+export type TWsActions = {
+  wsInit: typeof WS_CONNECTION_START, 
+  onOpen: typeof WS_CONNECTION_SUCCESS, 
+  onClose: typeof WS_CONNECTION_CLOSED, 
+  onError: typeof WS_CONNECTION_ERROR, 
+  onMessage: typeof WS_GET_ALL_ORDERS | typeof WS_GET_USER_ORDERS
+};

@@ -1,26 +1,24 @@
-import React, { useState, useCallback, useEffect, FormEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { NavLink, useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { TRootState } from '../../services/reducers';
+import ProfileMenu from '../../components/profile-menu/profile-menu';
+import { useSelector, useDispatch } from '../../services/hooks';
 import { TUserForm, TForm } from '../../services/types';
-import { logoutRequest, setUserRequest, tokenRequest } from '../../services/api';
-import { authRequest, authFailed, logoutSuccess, getUserSuccess, setUserSuccess, updateToken, tokenSuccess } from '../../services/actions/profile';
+import { setUserRequest, tokenRequest } from '../../services/api';
+import { authRequest, authFailed, setUserSuccess, tokenSuccess } from '../../services/actions/profile';
 import { setCookie, deleteCookie } from '../../utils/cookie';
 
 import style from './profile.module.css';
 
 const ProfilePage = () => {
-  const history = useHistory();
   const dispatch = useDispatch();
-  const profile: any = useSelector<TRootState>((state) => state.profile);
+  const profile = useSelector((state) => state.profileReducer);
 
   const [isEdited, setIsEdited] = useState(false);
 	const [form, setValue] = useState<TForm>({ name: '', email: '', password: '' });
 
   useEffect(() => {
-    setValue({ name: profile.user.name, email: profile.user.email, password: '' });
+    setValue({ name: profile.user.name ? profile.user.name : '', email: profile.user.email ? profile.user.email : '', password: '' });
   }, []);
 	
   const setUser = (form: TUserForm) => {
@@ -51,25 +49,6 @@ const ProfilePage = () => {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue({ ...form, [e.target.name]: e.target.value });
   };
-	
-  const logout = useCallback(
-    (e: FormEvent) => {
-      e.preventDefault();
-			
-			dispatch(authRequest);
-			logoutRequest().then(data => {
-				dispatch(logoutSuccess(data));
-        deleteCookie('accessToken');
-				localStorage.removeItem('refreshToken');
-				history.replace({ pathname: '/login' });
-			})
-			.catch((e: number | string | null) => {
-				console.log(e);
-				dispatch(authFailed);
-			})
-    },
-    [form]
-  );
 
   const onClickEdit = () => {
     setIsEdited(true);
@@ -82,34 +61,13 @@ const ProfilePage = () => {
 
   const onCancel = () => {
     setIsEdited(false);
-    setValue({ name: profile.user.name, email: profile.user.email, password: '' });
+    setValue({ name: profile.user.name ? profile.user.name : '', email: profile.user.email ? profile.user.email : '', password: '' });
   }
 
   return (
 		<main className={style.main}>
       <div className={style.main__start}>
-        <NavLink
-          to={{ pathname: `/profile` }}
-          className={`text text_type_main-medium pt-6 ${style.nav}`}
-          activeClassName={`text text_type_main-medium pt-6 ${style.activeNav}`}
-        >
-          <p className={style.navText}>Профиль</p>
-        </NavLink>
-        <NavLink
-          to={{ pathname: `/profile/orders` }}
-          className={`text text_type_main-medium ${style.nav}`}
-          activeClassName={`text text_type_main-medium ${style.activeNav}`}
-        >
-          <p className={style.navText}>История заказов</p>
-        </NavLink>
-        <NavLink
-          onClick={logout}
-          to={{ pathname: `/login` }}
-          className={`text text_type_main-medium ${style.nav}`}
-          activeClassName={`text text_type_main-medium ${style.activeNav}`}
-        >
-          <p className={style.navText}>Выход</p>
-        </NavLink> 
+        <ProfileMenu />
 			  <p className='text text_type_main-default text_color_inactive pt-20'>
           В этом разделе вы можете изменить свои персональные данные
         </p>

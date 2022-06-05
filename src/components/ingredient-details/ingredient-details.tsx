@@ -1,14 +1,13 @@
 import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { TRootState } from '../../services/reducers';
+import { useSelector } from '../../services/hooks';
 import { TIngredient } from '../../services/types';
 
 import style from './ingredient-details.module.css';
 
 const IngredientDetails = () => {
-  const dataState: any = useSelector<TRootState>(state => state.ingredients);
+  const dataState = useSelector(state => state.ingredientsReducer);
   const { id }: { id: string } = useParams();
 
   const ingredients = dataState.data;

@@ -1,9 +1,8 @@
 import React, { useState, useCallback, FormEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Redirect, Link, useHistory, useLocation } from 'react-router-dom';
 import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { TRootState } from '../../services/reducers';
+import { useSelector, useDispatch } from '../../services/hooks';
 import { TLocation } from '../../services/types';
 import { loginRequest } from '../../services/api';
 import { authRequest, authFailed, loginSuccess } from '../../services/actions/profile';
@@ -15,7 +14,7 @@ const LoginPage = () => {
   const location: TLocation = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const profile: any = useSelector<TRootState>(state => state.profile);
+  const profile = useSelector(state => state.profileReducer);
   const token = localStorage.getItem('refreshToken');
 
 	const [form, setValue] = useState({ email: '', password: '' });

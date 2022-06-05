@@ -1,50 +1,76 @@
 import { TIngredient } from '../types';
 
-export const SET_BUN_SELECTED_INGREDIENTS = 'CLEAR_SELECTED_INGREDIENTS';
-export const DELETE_BUN_SELECTED_INGREDIENTS = 'CLEAR_SELECTED_INGREDIENTS';
-export const ADD_ITEM_SELECTED_INGREDIENTS = 'ADD_ITEM_SELECTED_INGREDIENTS';
-export const DELETE_ITEM_SELECTED_INGREDIENTS = 'DELETE_ITEM_SELECTED_INGREDIENTS';
-export const CLEAR_SELECTED_INGREDIENTS = 'CLEAR_SELECTED_INGREDIENTS';
-export const SORT_INGREDIENTS = 'SORT_INGREDIENTS';
-export const CLEAR_INGREDIENTS = 'CLEAR_INGREDIENTS';
+import {
+  SET_BUN_SELECTED_INGREDIENTS,
+  DELETE_BUN_SELECTED_INGREDIENTS,
+	ADD_ITEM_SELECTED_INGREDIENTS,
+	DELETE_ITEM_SELECTED_INGREDIENTS,
+  SORT_INGREDIENTS,
+  CLEAR_INGREDIENTS,
+} from '../constants';
 
-export const addItemSelectedIngredients = (ingredient: TIngredient) => {
-	return {
-		type: ADD_ITEM_SELECTED_INGREDIENTS,
-		ingredient: ingredient
-	}
+export interface ISetBunSelectedIngredientsAction {
+  readonly type: typeof SET_BUN_SELECTED_INGREDIENTS;
+	ingredient: TIngredient;
 }
 
-export const deleteItemSelectedIngredients = (ingredient: TIngredient) => {
-	return {
-		type: DELETE_ITEM_SELECTED_INGREDIENTS,
-		ingredient: ingredient
-	}
+export interface IDeleteBunSelectedIngredientsAction {
+  readonly type: typeof DELETE_BUN_SELECTED_INGREDIENTS;
 }
 
-export const setBunSelectedIngredients = (ingredient: TIngredient) => {
-	return {
-		type: SET_BUN_SELECTED_INGREDIENTS,
-		ingredient: ingredient
-	}
+export interface IAddItemSelectedIngredientsAction {
+  readonly type: typeof ADD_ITEM_SELECTED_INGREDIENTS;
+	ingredient: TIngredient;
 }
 
-export const deleteBunSelectedIngredients = () => {
-	return {
-		type: DELETE_BUN_SELECTED_INGREDIENTS
-	}
+export interface IDeleteItemSelectedIngredientsAction {
+  readonly type: typeof DELETE_ITEM_SELECTED_INGREDIENTS;
+	ingredient: TIngredient;
 }
 
-export const sortIngredients = (itemFrom: TIngredient, itemTo: TIngredient) => {
-	return {
-		type: SORT_INGREDIENTS,
-		itemFrom: itemFrom,
-		itemTo: itemTo
-	}
+export interface ISortIngredientsAction {
+  readonly type: typeof SORT_INGREDIENTS;
+	itemFrom: TIngredient;
+	itemTo: TIngredient;
 }
 
-export const clearIngredients = () => {
-	return {
-		type: CLEAR_INGREDIENTS
-	}
+export interface IClearIngredientsAction {
+  readonly type: typeof CLEAR_INGREDIENTS;
 }
+
+export type TSelectedIngredientsActions = 
+	| ISetBunSelectedIngredientsAction
+  | IDeleteBunSelectedIngredientsAction
+  | IAddItemSelectedIngredientsAction
+  | IDeleteItemSelectedIngredientsAction
+  | ISortIngredientsAction
+	| IClearIngredientsAction;
+
+export const setBunSelectedIngredients = (ingredient: TIngredient): ISetBunSelectedIngredientsAction => ({
+	type: SET_BUN_SELECTED_INGREDIENTS,
+	ingredient: ingredient
+})
+
+export const deleteBunSelectedIngredients = (): IDeleteBunSelectedIngredientsAction => ({
+	type: DELETE_BUN_SELECTED_INGREDIENTS
+})
+
+export const addItemSelectedIngredients = (ingredient: TIngredient): IAddItemSelectedIngredientsAction => ({
+	type: ADD_ITEM_SELECTED_INGREDIENTS,
+	ingredient: ingredient
+})
+
+export const deleteItemSelectedIngredients = (ingredient: TIngredient): IDeleteItemSelectedIngredientsAction => ({
+	type: DELETE_ITEM_SELECTED_INGREDIENTS,
+	ingredient: ingredient
+})
+
+export const sortIngredients = (itemFrom: TIngredient, itemTo: TIngredient): ISortIngredientsAction => ({
+	type: SORT_INGREDIENTS,
+	itemFrom: itemFrom,
+	itemTo: itemTo
+})
+
+export const clearIngredients = () => ({
+	type: CLEAR_INGREDIENTS
+})

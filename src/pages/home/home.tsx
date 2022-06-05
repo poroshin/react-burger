@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { TRootState } from '../../services/reducers';
+import { useSelector, useDispatch } from '../../services/hooks';
 import { TIngredient } from '../../services/types';
 import BurgerIngredients from '../../components/burger-ingredients/burger-ingredients';
 import BurgerConstructor from '../../components/burger-constructor/burger-constructor';
@@ -21,9 +20,9 @@ type TIngredientsToOrder = {
 const HomePage = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const profile: any = useSelector<TRootState>(state => state.profile);
-  const selectedBun: any = useSelector<any>(state => state.selectedIngredients.bun);
-  const selectedIngredients: any = useSelector<any>(state => state.selectedIngredients.data);
+  const profile = useSelector(state => state.profileReducer);
+  const selectedBun = useSelector(state => state.selectedIngredientsReducer.bun);
+  const selectedIngredients = useSelector(state => state.selectedIngredientsReducer.data);
 
   const [modal, setModal] = useState({
     isOpenOrderDetails: false,

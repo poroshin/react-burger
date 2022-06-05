@@ -1,46 +1,60 @@
-import { TAuth } from '../types';
+import { TOrderData } from '../types';
 
-export const GET_ORDER_REQUEST = 'GET_ORDER_REQUEST';
-export const GET_ORDER_FAILED = 'GET_ORDER_FAILED';
-export const GET_ORDER_SUCCESS = 'GET_ORDER_SUCCESS';
+import {
+  GET_ORDER_REQUEST,
+  GET_ORDER_FAILED,
+  GET_ORDER_SUCCESS,
+  INCREASE_TOTAL_PRICE,
+  DELETE_TOTAL_PRICE,
+} from '../constants';
 
-export const INCREASE_TOTAL_PRICE = 'INCREASE_TOTAL_PRICE';
-export const DELETE_TOTAL_PRICE = 'DELETE_TOTAL_PRICE';
-
-export const getOrderSuccess = (data: TAuth) => {
-  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
-		dispatch({
-			type: GET_ORDER_SUCCESS,
-			data: data
-		});
-  };
+export interface IGetOrderSuccessAction {
+  readonly type: typeof GET_ORDER_SUCCESS;
+	data: TOrderData;
 }
 
-export const getOrderRequested = () => {
-  return function(dispatch: (arg0: { type: string; }) => void) {
-    dispatch({
-      type: GET_ORDER_REQUEST
-    });
-  };
+export interface IGetOrderRequestedAction {
+  readonly type: typeof GET_ORDER_REQUEST;
 }
 
-export const getOrderFailed = () => {
-  return function(dispatch: (arg0: { type: string; }) => void) {
-    dispatch({
-      type: GET_ORDER_FAILED
-    });
-  };
+export interface IGetOrderFailedAction {
+  readonly type: typeof GET_ORDER_FAILED;
 }
 
-export const setTotalPrice = (price: number) => {
-	return {
-		type: INCREASE_TOTAL_PRICE,
-		price: price
-	}
+export interface ISetTotalPriceAction {
+  readonly type: typeof INCREASE_TOTAL_PRICE;
+	price: number;
 }
 
-export const deleteTotalPrice = () => {
-	return {
-		type: DELETE_TOTAL_PRICE
-	}
+export interface IDeleteTotalPriceAction {
+  readonly type: typeof DELETE_TOTAL_PRICE;
 }
+
+export type TOrderActions = 
+	| IGetOrderSuccessAction
+  | IGetOrderRequestedAction
+  | IGetOrderFailedAction
+  | ISetTotalPriceAction
+  | IDeleteTotalPriceAction;
+
+export const getOrderSuccess = (data: TOrderData): IGetOrderSuccessAction => ({
+  type: GET_ORDER_SUCCESS,
+  data: data
+})
+
+export const getOrderRequested = (): IGetOrderRequestedAction => ({
+  type: GET_ORDER_REQUEST
+})
+
+export const getOrderFailed = (): IGetOrderFailedAction => ({
+  type: GET_ORDER_FAILED
+})
+
+export const setTotalPrice = (price: number): ISetTotalPriceAction => ({
+  type: INCREASE_TOTAL_PRICE,
+  price: price
+})
+
+export const deleteTotalPrice = (): IDeleteTotalPriceAction => ({
+  type: DELETE_TOTAL_PRICE
+})

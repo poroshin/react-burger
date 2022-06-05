@@ -1,57 +1,98 @@
-import { TAuth, TIngredient } from '../types';
+import { AppDispatch, TIngredient } from '../types';
 import { getIngredientsRequest } from '../api';
 
-export const GET_INGREDIENTS_REQUEST = 'GET_INGREDIENTS_REQUEST';
-export const GET_INGREDIENTS_FAILED = 'GET_INGREDIENTS_FAILED';
-export const GET_INGREDIENTS_SUCCESS = 'GET_INGREDIENTS_SUCCESS';
-export const INCREASE_INGREDIENT_COUNT = 'PLUS_INGREDIENT_COUNT';
-export const DECREASE_INGREDIENT_COUNT = 'MINUS_INGREDIENT_COUNT';
-export const SET_BUN_COUNT = 'SET_BUN_COUNT';
-export const DELETE_BUN_COUNT = 'DELETE_BUN_COUNT';
+import {
+	GET_INGREDIENTS_REQUEST,
+	GET_INGREDIENTS_FAILED,
+	GET_INGREDIENTS_SUCCESS,
+  INCREASE_INGREDIENT_COUNT,
+  DECREASE_INGREDIENT_COUNT,
+  SET_BUN_COUNT,
+  DELETE_BUN_COUNT,
+} from '../constants';
+
+export interface IGetIngredientsRequestAction {
+  readonly type: typeof GET_INGREDIENTS_REQUEST;
+}
+
+export interface IGetIngredientsSuccessAction {
+  readonly type: typeof GET_INGREDIENTS_SUCCESS;
+	readonly data: ReadonlyArray<TIngredient>;
+}
+
+export interface IGetIngredientsFailedAction {
+  readonly type: typeof GET_INGREDIENTS_FAILED;
+}
+
+export interface IIncreaseIngredientCountAction {
+  readonly type: typeof INCREASE_INGREDIENT_COUNT;
+	ingredient: TIngredient;
+}
+
+export interface IDecreaseIngredientCountAction {
+  readonly type: typeof DECREASE_INGREDIENT_COUNT;
+	ingredient: TIngredient;
+}
+
+export interface ISetBunCountAction {
+  readonly type: typeof SET_BUN_COUNT;
+	ingredient: TIngredient;
+}
+
+export interface IDeleteBunCountAction {
+  readonly type: typeof DELETE_BUN_COUNT;
+}
+
+export type TIngredientsActions = 
+	| IGetIngredientsRequestAction
+  | IGetIngredientsSuccessAction
+  | IGetIngredientsFailedAction
+  | IIncreaseIngredientCountAction
+  | IDecreaseIngredientCountAction
+  | ISetBunCountAction
+  | IDeleteBunCountAction;
 
 export const getIngredients = () => {
-  return function(dispatch: (arg0: { type: string; data?: TAuth; }) => void) {
-    dispatch({
-      type: GET_INGREDIENTS_REQUEST
-    });
+  return function(dispatch: AppDispatch) {
+    dispatch(getIngredientsRequestAction());
     getIngredientsRequest().then(res => {
-			dispatch({
-				type: GET_INGREDIENTS_SUCCESS,
-				data: res.data
-			});
+			dispatch(getIngredientsSuccessAction(res.data));
 		})
 		.catch((e: number | string | null) => {
 			console.log(e);
-			dispatch({
-				type: GET_INGREDIENTS_FAILED
-			});
+			dispatch(getIngredientsFailedAction());
 		})
   };
 }
 
-export const increaseIngredientCount = (ingredient: TIngredient) => {
-	return {
-		type: INCREASE_INGREDIENT_COUNT,
-		ingredient: ingredient
-	}
-}
+export const getIngredientsRequestAction = (): IGetIngredientsRequestAction => ({
+	type: GET_INGREDIENTS_REQUEST
+})
 
-export const decreaseIngredientCount = (ingredient: TIngredient) => {
-	return {
-		type: DECREASE_INGREDIENT_COUNT,
-		ingredient: ingredient
-	}
-}
+export const getIngredientsSuccessAction = (data: ReadonlyArray<TIngredient>): IGetIngredientsSuccessAction => ({
+	type: GET_INGREDIENTS_SUCCESS,
+	data: data
+})
 
-export const setBunCount = (ingredient: TIngredient) => {
-	return {
-		type: SET_BUN_COUNT,
-		ingredient: ingredient
-	}
-}
+export const getIngredientsFailedAction = (): IGetIngredientsFailedAction => ({
+	type: GET_INGREDIENTS_FAILED
+})
 
-export const deleteBunCount = () => {
-	return {
-		type: DELETE_BUN_COUNT
-	}
-}
+export const increaseIngredientCount = (ingredient: TIngredient): IIncreaseIngredientCountAction => ({
+	type: INCREASE_INGREDIENT_COUNT,
+	ingredient: ingredient
+})
+
+export const decreaseIngredientCount = (ingredient: TIngredient): IDecreaseIngredientCountAction => ({
+	type: DECREASE_INGREDIENT_COUNT,
+	ingredient: ingredient
+})
+
+export const setBunCount = (ingredient: TIngredient): ISetBunCountAction => ({
+	type: SET_BUN_COUNT,
+	ingredient: ingredient
+})
+
+export const deleteBunCount = (): IDeleteBunCountAction => ({
+	type: DELETE_BUN_COUNT
+})

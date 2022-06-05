@@ -1,10 +1,9 @@
 import React, { FC } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { useDrag } from "react-dnd";
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { TRootState } from '../../services/reducers';
+import { useSelector } from '../../services/hooks';
 import { TIngredient } from '../../services/types';
 import { labels } from '../../utils/constants';
 import { dataFilter } from '../../utils/filter';
@@ -52,7 +51,7 @@ const Ingredient: FC<TIngredientItem> = ({ingredient}) => {
 };
 
 const BurgerIngredients = () => {
-  const dataState: any = useSelector<TRootState>(state => state.ingredients);
+  const dataState = useSelector(state => state.ingredientsReducer);
   
   const [currentTab, setCurrentTab] = React.useState(labels.bun);
 

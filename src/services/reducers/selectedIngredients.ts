@@ -1,21 +1,25 @@
-import { TReducerSelectedIngredients, TIngredient, TSelectedIngredients } from '../types';
-
+import { TIngredient, TSelectedIngredients } from '../types';
+import { TSelectedIngredientsActions } from '../actions/selectedIngredients';
 import {
   SET_BUN_SELECTED_INGREDIENTS,
   DELETE_BUN_SELECTED_INGREDIENTS,
 	ADD_ITEM_SELECTED_INGREDIENTS,
 	DELETE_ITEM_SELECTED_INGREDIENTS,
-	CLEAR_SELECTED_INGREDIENTS,
   SORT_INGREDIENTS,
   CLEAR_INGREDIENTS,
-} from '../actions/selectedIngredients';
+} from '../constants';
+
+export type TSelectedIngredientsState = {
+	bun: TIngredient | null;
+	data: TIngredient[];
+};
 
 const selectedIngredientsInitialState: TSelectedIngredients = {
   bun: null,
 	data: []
 };
 
-export const selectedIngredientsReducer = (state = selectedIngredientsInitialState, action: TReducerSelectedIngredients) => {
+export const selectedIngredientsReducer = (state: TSelectedIngredientsState = selectedIngredientsInitialState, action: TSelectedIngredientsActions): TSelectedIngredientsState => {
   switch (action.type) {
     case SET_BUN_SELECTED_INGREDIENTS: {
       return {
@@ -42,9 +46,6 @@ export const selectedIngredientsReducer = (state = selectedIngredientsInitialSta
           item.uuid !== action.ingredient.uuid
         )
       };
-    }
-    case CLEAR_SELECTED_INGREDIENTS: {
-      return selectedIngredientsInitialState;
     }
     case SORT_INGREDIENTS: {
 			const data = [...state.data];

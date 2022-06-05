@@ -24,7 +24,7 @@ function AppHeader() {
         <nav className={`${style.header__nav} pt-4 pr-5 pb-4 pl-5 mt-4 mb-4 ml-2`}>
           <ListIcon type='primary' />
           <NavLink
-            to={{ pathname: `/orders` }}
+            to={{ pathname: `/feed` }}
             className={`${style.nav} ml-2 text text_type_main-default text_color_inactive`}
             activeClassName={`${style.navActive} ml-2 text text_type_main-default`}
           >

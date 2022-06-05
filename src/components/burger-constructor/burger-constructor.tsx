@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { useDrop } from "react-dnd";
 import { ConstructorElement, Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { v4 as uuidv4 } from 'uuid';
 
+import { useSelector, useDispatch } from '../../services/hooks';
 import { TIngredient } from '../../services/types';
 import { ConstructorIngredient } from '../constructor-ingredient/constructor-ingredient';
 import { labels } from '../../utils/constants';
@@ -19,9 +19,9 @@ type TBurgerConstructor = {
 
 const BurgerConstructor = ({onOpenModalOrder}: TBurgerConstructor) => {
   const dispatch = useDispatch();
-  const selectedBun: any = useSelector<any>(state => state.selectedIngredients.bun);
-  const selectedIngredients: any = useSelector<any>(state => state.selectedIngredients.data);
-  const totalPrice: any = useSelector<any>(state => state.order.totalPrice);
+  const selectedBun = useSelector(state => state.selectedIngredientsReducer.bun);
+  const selectedIngredients = useSelector(state => state.selectedIngredientsReducer.data);
+  const { totalPrice } = useSelector(state => state.orderReducer);
 
 	const [, dropRef] = useDrop({
 		accept: 'ingredient',

@@ -1,15 +1,12 @@
-import { FC, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Redirect, Route, useLocation, RouteProps } from 'react-router-dom';
 
-import { TRootState } from '../services/reducers';
+import { useSelector, useDispatch } from '../services/hooks';
 import { TLocation } from '../services/types';
-import { authRequest, authFailed, getUserSuccess } from '../services/actions/profile';
 
 export const ProtectedRoute = ({ children, ...rest }: RouteProps) => {
   const location: TLocation = useLocation();
   const dispatch = useDispatch();
-  const profile: any = useSelector<TRootState>(state => state.profile);
+  const profile = useSelector(state => state.profileReducer);
 
   return (
     <Route

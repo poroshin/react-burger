@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 
-import { TRootState } from '../../services/reducers';
+import { useSelector, useDispatch } from '../../services/hooks';
 import { TLocation } from '../../services/types';
 import { getCookie, setCookie } from '../../utils/cookie';
 import { getIngredients } from '../../services/actions/ingredients';
@@ -12,6 +11,7 @@ import { ProtectedRoute } from '../protected-route';
 import AppHeader from '../app-header/app-header';
 import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
+import OrderModal from '../order-modal/order-modal';
 
 import HomePage from '../../pages/home/home';
 import NotFound404 from '../../pages/not-found/not-found';
@@ -21,13 +21,16 @@ import ForgotPasswordPage from '../../pages/forgot-password/forgot-password';
 import ResetPasswordPage from '../../pages/reset-password/reset-password';
 import ProfilePage from '../../pages/profile/profile';
 import IngredientPage from '../../pages/ingredients/ingredients';
+import OrderFeedPage from '../../pages/order-feed/order-feed';
+import OrderPage from '../../pages/order/order';
+import ProfileOrderFeedPage from '../../pages/profile-order-feed/profile-order-feed';
 
 const App = () => {
   const location: TLocation = useLocation();
   const history = useHistory();
 
   const dispatch = useDispatch();
-  const dataState: any = useSelector<TRootState>(state => state.ingredients);
+  const dataState = useSelector(state => state.ingredientsReducer);
   
   useEffect(() => {
     dispatch(getIngredients());
@@ -94,6 +97,18 @@ const App = () => {
             <IngredientPage />
           </Route>
         )}
+        <Route path="/feed" exact>
+          <OrderFeedPage />
+        </Route>
+        <Route path="/feed/:id" exact>
+          <OrderPage />
+        </Route>
+        <ProtectedRoute path="/profile/orders" exact>
+          <ProfileOrderFeedPage />
+        </ProtectedRoute>
+        <ProtectedRoute path="/profile/orders/:id" exact>
+          <OrderPage />
+        </ProtectedRoute>
         <Route>
           <NotFound404 />
         </Route>
@@ -102,6 +117,20 @@ const App = () => {
         <Route path="/ingredients/:id">
           <Modal onClose={handleCloseModal}>
             <IngredientDetails />
+          </Modal>
+        </Route>
+      )}
+      {background && (
+        <Route path="/feed/:id">
+          <Modal onClose={handleCloseModal}>
+            <OrderModal />
+          </Modal>
+        </Route>
+      )}
+      {background && (
+        <Route path="/profile/orders/:id">
+          <Modal onClose={handleCloseModal}>
+            <OrderModal />
           </Modal>
         </Route>
       )}

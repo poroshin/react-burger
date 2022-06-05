@@ -1,5 +1,5 @@
-import { TReducerProfile } from '../types';
-
+import { TUserForm } from '../types';
+import { TProfileActions } from '../actions/profile';
 import {
   AUTH_REQUEST,
   AUTH_FAILED,
@@ -11,7 +11,18 @@ import {
 	FORGOT_PASSWORD_SUCCESS,
   GET_USER_SUCCESS,
   SET_USER_SUCCESS,
-} from '../actions/profile';
+} from '../constants';
+
+export type TProfileState = {
+	isLoaded: boolean;
+	isFailed: boolean;
+	isRequested: boolean;
+	isLoggedIn: boolean;
+	isResetPassword: boolean;
+  user: TUserForm;
+	token: string;
+	message: string;
+};
 
 const profileInitialState = {
 	isLoaded: false,
@@ -24,7 +35,7 @@ const profileInitialState = {
 	message: ''
 };
 
-export const profileReducer = (state = profileInitialState, action: TReducerProfile) => {
+export const profileReducer = (state: TProfileState = profileInitialState, action: TProfileActions): TProfileState => {
   switch (action.type) {
     case AUTH_REQUEST: {
       return {
@@ -63,6 +74,7 @@ export const profileReducer = (state = profileInitialState, action: TReducerProf
     }
     case LOGOUT_SUCCESS: {
       return {
+        ...state,
 				user: {},
         isLoggedIn: false,
         message: action.data.message,

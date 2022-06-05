@@ -1,20 +1,81 @@
 import { tokenRequest } from '../api';
 import { setCookie } from '../../utils/cookie';
-import { TAuth } from '../types';
+import { TDataProfile } from '../types';
 
-export const AUTH_REQUEST = 'AUTH_REQUEST';
-export const AUTH_FAILED = 'AUTH_FAILED';
-export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
-export const TOKEN_SUCCESS = 'TOKEN_SUCCESS';
-export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS';
-export const FORGOT_PASSWORD_SUCCESS = 'FORGOT_PASSWORD_SUCCESS';
-export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
-export const SET_USER_SUCCESS = 'SET_USER_SUCCESS';
+import {
+  AUTH_REQUEST,
+  AUTH_FAILED,
+  REGISTER_SUCCESS,
+  LOGIN_SUCCESS,
+  LOGOUT_SUCCESS,
+  TOKEN_SUCCESS,
+	RESET_PASSWORD_SUCCESS,
+	FORGOT_PASSWORD_SUCCESS,
+  GET_USER_SUCCESS,
+  SET_USER_SUCCESS,
+} from '../constants';
+
+export interface IAuthRequestAction {
+  readonly type: typeof AUTH_REQUEST;
+}
+
+export interface IAuthFailedAction {
+  readonly type: typeof AUTH_FAILED;
+}
+
+export interface IRegisterSuccessAction {
+  readonly type: typeof REGISTER_SUCCESS;
+  data: TDataProfile;
+}
+
+export interface ILoginSuccessAction {
+  readonly type: typeof LOGIN_SUCCESS;
+  data: TDataProfile;
+}
+
+export interface ILogoutSuccessAction {
+  readonly type: typeof LOGOUT_SUCCESS;
+  data: TDataProfile;
+}
+
+export interface ITokenSuccessAction {
+  readonly type: typeof TOKEN_SUCCESS;
+}
+
+export interface IResetPasswordSuccessAction {
+  readonly type: typeof RESET_PASSWORD_SUCCESS;
+  data: TDataProfile;
+}
+
+export interface IForgotPasswordSuccessAction {
+  readonly type: typeof FORGOT_PASSWORD_SUCCESS;
+  data: TDataProfile;
+}
+
+export interface IGetUserSuccessAction {
+  readonly type: typeof GET_USER_SUCCESS;
+  data: TDataProfile;
+}
+
+export interface ISetUserSuccessAction {
+  readonly type: typeof SET_USER_SUCCESS;
+  data: TDataProfile;
+}
+
+export type TProfileActions = 
+	| IAuthRequestAction
+  | IAuthFailedAction
+  | IRegisterSuccessAction
+  | ILoginSuccessAction
+  | ILogoutSuccessAction
+	| ITokenSuccessAction
+  | IResetPasswordSuccessAction
+  | IForgotPasswordSuccessAction
+  | IGetUserSuccessAction
+  | ISetUserSuccessAction;
 
 export const updateToken = () => {
-  return function(dispatch: (arg0: { (): (dispatch: (arg0: { type: string; }) => void) => void; (dispatch: any): void; (): (dispatch: (arg0: { type: string; }) => void) => void; }) => void) {
+  return function(dispatch: any) {
     dispatch(authRequest);
     tokenRequest().then(data => {
       dispatch(tokenSuccess);
@@ -29,89 +90,49 @@ export const updateToken = () => {
   };
 }
 
-export const authRequest = () => {
-  return function(dispatch: (arg0: { type: string; }) => void) {
-    dispatch({
-      type: AUTH_REQUEST
-    });
-  };
-}
+export const authRequest = (): IAuthRequestAction => ({
+  type: AUTH_REQUEST
+})
 
-export const authFailed = () => {
-  return function(dispatch: (arg0: { type: string; }) => void) {
-    dispatch({
-      type: AUTH_FAILED
-    });
-  };
-}
+export const authFailed = (): IAuthFailedAction => ({
+  type: AUTH_FAILED
+})
 
-export const registerSuccess = (data: TAuth) => {
-  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
-    dispatch({
-      type: REGISTER_SUCCESS,
-			data: data
-    });
-  };
-}
+export const registerSuccess = (data: TDataProfile): IRegisterSuccessAction => ({
+  type: REGISTER_SUCCESS,
+  data: data
+})
 
-export const loginSuccess = (data: TAuth) => {
-  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
-		dispatch({
-			type: LOGIN_SUCCESS,
-			data: data
-		});
-  };
-}
+export const loginSuccess = (data: TDataProfile): ILoginSuccessAction => ({
+  type: LOGIN_SUCCESS,
+  data: data
+})
 
-export const logoutSuccess = (data: TAuth) => {
-  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
-		dispatch({
-			type: LOGOUT_SUCCESS,
-			data: data
-		});
-  };
-}
+export const logoutSuccess = (data: TDataProfile): ILogoutSuccessAction => ({
+  type: LOGOUT_SUCCESS,
+  data: data
+})
 
-export const tokenSuccess = () => {
-  return function(dispatch: (arg0: { type: string; }) => void) {
-		dispatch({
-			type: TOKEN_SUCCESS
-		});
-  };
-}
+export const tokenSuccess = (): ITokenSuccessAction => ({
+  type: TOKEN_SUCCESS
+})
 
-export const resetPasswordSuccess = (data: TAuth) => {
-  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
-		dispatch({
-			type: RESET_PASSWORD_SUCCESS,
-			data: data
-		});
-  };
-}
+export const resetPasswordSuccess = (data: TDataProfile): IResetPasswordSuccessAction => ({
+  type: RESET_PASSWORD_SUCCESS,
+  data: data
+})
 
-export const forgotPasswordSuccess = (data: TAuth) => {
-  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
-		dispatch({
-			type: FORGOT_PASSWORD_SUCCESS,
-			data: data
-		});
-  };
-}
+export const forgotPasswordSuccess = (data: TDataProfile): IForgotPasswordSuccessAction => ({
+  type: FORGOT_PASSWORD_SUCCESS,
+  data: data
+})
 
-export const getUserSuccess = (data: TAuth) => {
-  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
-		dispatch({
-			type: LOGIN_SUCCESS,
-			data: data
-		});
-  };
-}
+export const getUserSuccess = (data: TDataProfile): IGetUserSuccessAction => ({
+  type: GET_USER_SUCCESS,
+  data: data
+})
 
-export const setUserSuccess = (data: TAuth) => {
-  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
-		dispatch({
-			type: LOGIN_SUCCESS,
-			data: data
-		});
-  };
-}
+export const setUserSuccess = (data: TDataProfile): ISetUserSuccessAction => ({
+  type: SET_USER_SUCCESS,
+  data: data
+})
