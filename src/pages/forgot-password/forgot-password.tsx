@@ -4,8 +4,7 @@ import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burg
 
 import { useSelector, useDispatch } from '../../services/hooks';
 import { TLocation } from '../../services/types';
-import { forgotPasswordRequest } from '../../services/api';
-import { authRequest, authFailed, forgotPasswordSuccess } from '../../services/actions/profile';
+import { forgotPasswordThunk } from '../../services/actions/profile';
 
 import style from './forgot-password.module.css';
 
@@ -25,16 +24,7 @@ const ForgotPasswordPage = () => {
   const forgotPassword = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
-
-			dispatch(authRequest);
-			forgotPasswordRequest(form).then(data => {
-				dispatch(forgotPasswordSuccess(data));
-				history.replace({ pathname: '/reset-password' });
-			})
-			.catch((e: number | string | null) => {
-				console.log(e);
-				dispatch(authFailed);
-			})
+			dispatch(forgotPasswordThunk(form, history));
     },
     [form]
   );

@@ -53,8 +53,8 @@ const OrderInfo: FC<TOrderItem> = ({order}) => {
           </p>
           <div className={`${style.spaceBetween} pl-6 pr-6 pt-2`}>
             <div className={`${style.price} pl-10 pt-1 pb-1`}>
-              {ingredientsOrder.map((item: TIngredient) => (
-                <div className={`${style.imgBorder}`}>
+              {ingredientsOrder.map((item: TIngredient, index: number) => (
+                <div key={index} className={`${style.imgBorder}`}>
                   <img src={item.image_mobile} alt={item.name} className={`${style.img}`} />
                 </div>
               ))}

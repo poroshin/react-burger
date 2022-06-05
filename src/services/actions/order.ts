@@ -1,4 +1,5 @@
-import { TOrderData } from '../types';
+import { AppDispatch, AppThunk, TOrderData } from '../types';
+import { getOrderRequest } from '../api';
 
 import {
   GET_ORDER_REQUEST,
@@ -36,6 +37,19 @@ export type TOrderActions =
   | IGetOrderFailedAction
   | ISetTotalPriceAction
   | IDeleteTotalPriceAction;
+
+export const getOrder: AppThunk = (ingredientsToOrder) => {
+  return function(dispatch: AppDispatch) {
+    dispatch(getOrderRequested());
+    getOrderRequest(ingredientsToOrder).then(data => {
+      dispatch(getOrderSuccess(data));
+    })
+    .catch((e: number | string | null) => {
+      console.log(e);
+      dispatch(getOrderFailed());
+    })
+  };
+}
 
 export const getOrderSuccess = (data: TOrderData): IGetOrderSuccessAction => ({
   type: GET_ORDER_SUCCESS,

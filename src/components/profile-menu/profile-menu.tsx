@@ -2,9 +2,7 @@ import React, { useCallback, FormEvent } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 
 import { useDispatch } from '../../services/hooks';
-import { logoutRequest } from '../../services/api';
-import { authRequest, authFailed, logoutSuccess } from '../../services/actions/profile';
-import { deleteCookie } from '../../utils/cookie';
+import { setLogout } from '../../services/actions/profile';
 
 import style from './profile-menu.module.css';
 
@@ -15,18 +13,7 @@ function ProfileMenu() {
   const logout = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
-			
-			dispatch(authRequest);
-			logoutRequest().then(data => {
-				dispatch(logoutSuccess(data));
-        deleteCookie('accessToken');
-				localStorage.removeItem('refreshToken');
-				history.replace({ pathname: '/login' });
-			})
-			.catch((e: number | string | null) => {
-				console.log(e);
-				dispatch(authFailed);
-			})
+			dispatch(setLogout(history));
     },
     []
   );

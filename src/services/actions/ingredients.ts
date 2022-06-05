@@ -1,4 +1,4 @@
-import { AppDispatch, TIngredient } from '../types';
+import { AppDispatch, AppThunk, TIngredient } from '../types';
 import { getIngredientsRequest } from '../api';
 
 import {
@@ -52,7 +52,7 @@ export type TIngredientsActions =
   | ISetBunCountAction
   | IDeleteBunCountAction;
 
-export const getIngredients = () => {
+export const getIngredients: AppThunk = () => {
   return function(dispatch: AppDispatch) {
     dispatch(getIngredientsRequestAction());
     getIngredientsRequest().then(res => {

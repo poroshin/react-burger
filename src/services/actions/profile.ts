@@ -1,6 +1,15 @@
-import { tokenRequest } from '../api';
-import { setCookie } from '../../utils/cookie';
-import { TDataProfile } from '../types';
+import { 
+  tokenRequest, 
+  registerRequest, 
+  loginRequest, 
+  logoutRequest, 
+  getUserRequest, 
+  setUserRequest, 
+  forgotPasswordRequest, 
+  resetPasswordRequest
+} from '../api';
+import { setCookie, deleteCookie } from '../../utils/cookie';
+import { AppDispatch, AppThunk, TDataProfile } from '../types';
 
 import {
   AUTH_REQUEST,
@@ -74,18 +83,160 @@ export type TProfileActions =
   | IGetUserSuccessAction
   | ISetUserSuccessAction;
 
-export const updateToken = () => {
-  return function(dispatch: any) {
-    dispatch(authRequest);
+export const updateToken: AppThunk = () => {
+  return function(dispatch: AppDispatch) {
+    dispatch(authRequest());
     tokenRequest().then(data => {
-      dispatch(tokenSuccess);
+      dispatch(tokenSuccess());
       let accessToken = data.accessToken.split('Bearer ')[1];
       setCookie('accessToken', accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
     })
     .catch((e: number | string | null) => {
       console.log(e);
-      dispatch(authFailed);
+      dispatch(authFailed());
+    })
+  };
+}
+
+export const setLogout: AppThunk = (history) => {
+  return function(dispatch: AppDispatch) {
+    dispatch(authRequest());
+    logoutRequest().then(data => {
+      dispatch(logoutSuccess(data));
+      deleteCookie('accessToken');
+      localStorage.removeItem('refreshToken');
+      history.replace({ pathname: '/login' });
+    })
+    .catch((e: number | string | null) => {
+      console.log(e);
+      dispatch(authFailed());
+    })
+  };
+}
+
+export const forgotPasswordThunk: AppThunk = (form, history) => {
+  return function(dispatch: AppDispatch) {
+    dispatch(authRequest());
+    forgotPasswordRequest(form).then(data => {
+      dispatch(forgotPasswordSuccess(data));
+      history.replace({ pathname: '/reset-password' });
+    })
+    .catch((e: number | string | null) => {
+      console.log(e);
+      dispatch(authFailed());
+    })
+  };
+}
+
+export const resetPasswordThunk: AppThunk = (form, history) => {
+  return function(dispatch: AppDispatch) {
+    dispatch(authRequest());
+    resetPasswordRequest(form).then(data => {
+      dispatch(resetPasswordSuccess(data));
+      history.replace({ pathname: '/profile' });
+    })
+    .catch((e: number | string | null) => {
+      console.log(e);
+      dispatch(authFailed());
+    })
+  };
+}
+
+export const authorizationThunk: AppThunk = () => {
+  return function(dispatch: AppDispatch) {
+    dispatch(authRequest());
+    getUserRequest().then(data => {
+      dispatch(getUserSuccess(data));
+    })
+    .catch((e: number | string | null) => {
+      if (e == 403) {
+        dispatch(authRequest());
+        tokenRequest().then(data => {
+          dispatch(tokenSuccess());
+          let accessToken = data.accessToken.split('Bearer ')[1];
+          setCookie('accessToken', accessToken);
+          localStorage.setItem('refreshToken', data.refreshToken);
+
+          dispatch(authRequest());
+          getUserRequest().then(data => {
+            dispatch(getUserSuccess(data));
+          })
+        })
+        .catch((e: number | string | null) => {
+          console.log(e);
+          dispatch(authFailed());
+        })
+      } else {
+        console.log(e);
+        dispatch(authFailed());
+      }
+    })
+  };
+}
+
+export const setUserThunk: AppThunk = (form) => {
+  return function(dispatch: AppDispatch) {
+    dispatch(authRequest());
+    setUserRequest(form).then(data => {
+      dispatch(setUserSuccess(data));
+    })
+    .catch((e: number | string | null) => {
+      if (e == 403) {
+        dispatch(authRequest());
+        tokenRequest().then(data => {
+          dispatch(tokenSuccess());
+          let accessToken = data.accessToken.split('Bearer ')[1];
+          setCookie('accessToken', accessToken);
+          localStorage.setItem('refreshToken', data.refreshToken);
+
+          dispatch(authRequest());
+          setUserRequest(form).then(data => {
+            dispatch(setUserSuccess(data));
+          })
+        })
+        .catch((e: number | string | null) => {
+          console.log(e);
+          dispatch(authFailed());
+        })
+      } else {
+        console.log(e);
+        dispatch(authFailed());
+      }
+    })
+  };
+}
+
+export const loginThunk: AppThunk = (form, history) => {
+  return function(dispatch: AppDispatch) {
+    dispatch(authRequest());
+    loginRequest(form).then(data => {
+      dispatch(loginSuccess(data));
+      let accessToken = data.accessToken.split('Bearer ')[1];
+      setCookie('accessToken', accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      history.replace({ pathname: '/' });
+    })
+    .catch((e: number | string | null) => {
+      console.log(e);
+      dispatch(authFailed());
+    })
+  };
+}
+
+export const registerThunk: AppThunk = (form, history) => {
+  return function(dispatch: AppDispatch) {
+    dispatch(authRequest());
+    registerRequest(form).then(data => {
+      dispatch(registerSuccess(data));
+      let accessToken = data.accessToken.split('Bearer ')[1];
+      setCookie('accessToken', accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      history.replace({ pathname: '/profile' });
+    })
+    .catch((e: number | string | null) => {
+      console.log(e);
+      dispatch(authFailed());
     })
   };
 }

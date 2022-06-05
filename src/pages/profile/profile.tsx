@@ -4,9 +4,7 @@ import { Input, Button } from '@ya.praktikum/react-developer-burger-ui-component
 import ProfileMenu from '../../components/profile-menu/profile-menu';
 import { useSelector, useDispatch } from '../../services/hooks';
 import { TUserForm, TForm } from '../../services/types';
-import { setUserRequest, tokenRequest } from '../../services/api';
-import { authRequest, authFailed, setUserSuccess, tokenSuccess } from '../../services/actions/profile';
-import { setCookie, deleteCookie } from '../../utils/cookie';
+import { setUserThunk } from '../../services/actions/profile';
 
 import style from './profile.module.css';
 
@@ -22,28 +20,7 @@ const ProfilePage = () => {
   }, []);
 	
   const setUser = (form: TUserForm) => {
-    dispatch(authRequest);
-    setUserRequest(form).then(data => {
-      dispatch(setUserSuccess(data));
-    })
-    .catch((e: number | string | null) => {
-      if (e == 403) {
-        dispatch(authRequest);
-        tokenRequest().then(data => {
-          dispatch(tokenSuccess());
-          let accessToken = data.accessToken.split('Bearer ')[1];
-          setCookie('accessToken', accessToken);
-          localStorage.setItem('refreshToken', data.refreshToken);
-          setUser(form);
-        })
-        .catch((e: number | string | null) => {
-          console.log(e);
-          dispatch(authFailed);
-        })
-      }
-      console.log(e);
-      dispatch(authFailed);
-    })
+    dispatch(setUserThunk(form));
   };
 	
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {

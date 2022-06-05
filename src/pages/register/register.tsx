@@ -4,9 +4,7 @@ import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burg
 
 import { useSelector, useDispatch } from '../../services/hooks';
 import { TLocation } from '../../services/types';
-import { registerRequest } from '../../services/api';
-import { authRequest, authFailed, registerSuccess } from '../../services/actions/profile';
-import { setCookie } from '../../utils/cookie';
+import { registerThunk } from '../../services/actions/profile';
 
 import style from './register.module.css';
 
@@ -26,19 +24,7 @@ const RegisterPage = () => {
   const register = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
-
-			dispatch(authRequest);
-			registerRequest(form).then(data => {
-				dispatch(registerSuccess(data));
-				let accessToken = data.accessToken.split('Bearer ')[1];
-				setCookie('accessToken', accessToken);
-				localStorage.setItem('refreshToken', data.refreshToken);
-				history.replace({ pathname: '/profile' });
-			})
-			.catch((e: number | string | null) => {
-				console.log(e);
-				dispatch(authFailed);
-			})
+			dispatch(registerThunk(form, history));
     },
     [form]
   );

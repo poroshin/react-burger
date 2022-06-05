@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
@@ -26,27 +26,41 @@ const OrderModal = () => {
   }, [dispatch]);
   
   const dataState = useSelector(state => state.ingredientsReducer);
-  const ingredientsOrder: TIngredient[] = [];
-  let totalPrice: number = 0;
+  // let ingredientsOrder: TIngredient[] = [];
+  // let totalPrice: number = 0;
+  type TOrderState = {
+    ingredientsOrder: TIngredient[];
+    totalPrice: number;
+  };
+	const [orderState, setOrderState] = useState<TOrderState>({ ingredientsOrder: [], totalPrice: 0 });
   
   const order = orders.find((item: TOrder) => item._id === id);
 
-  if(order?.ingredients){
-    for (let i = 0; i < order?.ingredients.length; i++) {
-      const ingredient = dataState.data.find((item: TIngredient) => item._id === order?.ingredients[i]);
-      if(ingredient) ingredientsOrder.push(ingredient);
-      totalPrice = ingredient ? totalPrice + ingredient?.price : totalPrice;
+  useEffect(() => {
+    if(order?.ingredients && orderState.totalPrice == 0){
+      for (let i = 0; i < order?.ingredients.length; i++) {
+        const ingredient = dataState.data.find((item: TIngredient) => item._id === order?.ingredients[i]);
+        if(ingredient){
+          const newIngredien = orderState.ingredientsOrder.find((item: TIngredient) => item._id === ingredient._id);
+          if(newIngredien){
+            for (let io = 0; io < orderState.ingredientsOrder.length; io++) {
+              if(orderState.ingredientsOrder[io]._id === ingredient._id){
+                orderState.ingredientsOrder[io].count += 1;
+              }
+            }
+          } else {
+            ingredient.count = 1;
+            orderState.ingredientsOrder.push(ingredient); // состав бургера в модальном окне
+          }
+          orderState.totalPrice += ingredient.price; // цена бургера в модальном окне
+        }
+      }
     }
-  }
-
-  // const dataState = useSelector(state => state.ingredientsReducer);
-
-  // const ingredients = dataState.data;
-  // const ingredient = ingredients.find((item: TIngredient) => item._id === id);
+  }, [order]);
 
   return (
 		<>
-			{order && ingredientsOrder && (
+			{order && orderState.ingredientsOrder && (
 			<div className={`${style.modal} pr-6`}>
 				<p className={`${style.description} text text_type_digits-small pt-10 pb-2 pl-10 mt-2`}>
 					#{order.number}
@@ -61,8 +75,8 @@ const OrderModal = () => {
           Состав:
         </p>
 				<div className={`${style.scrollBar} pt-2 pl-6 pr-4`}>
-          {ingredientsOrder.map((item: TIngredient) => (
-            <div className={`${style.spaceBetween} pl-6`}>
+          {orderState.ingredientsOrder.map((item: TIngredient) => (
+            <div key={item._id} className={`${style.spaceBetween} pl-6`}>
               <div className={`${style.price}`}>
                   <>
                     <div className={`${style.imgBorder}`}>
@@ -74,7 +88,7 @@ const OrderModal = () => {
                   </>
               </div>
               <div className={`${style.price} pt-6 pb-1`}>
-                <p className='text text_type_main-default pr-2'>{item.price}</p>
+                <p className='text text_type_main-default pr-2'>{item.count} x {item.price}</p>
                 <CurrencyIcon type="primary" />
               </div>
             </div>
@@ -86,7 +100,7 @@ const OrderModal = () => {
             {sayDate(order.createdAt)}
           </p>
           <div className={`${style.price} pt-1 pb-1`}>
-            <p className='text text_type_main-default pr-2'>{totalPrice}</p>
+            <p className='text text_type_main-default pr-2'>{orderState.totalPrice}</p>
             <CurrencyIcon type="primary" />
           </div>
         </div>

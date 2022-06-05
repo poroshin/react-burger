@@ -1,16 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import React, { useEffect } from 'react';
 
 import { wsUrlAll } from '../../utils/constants';
 import { getCookie } from '../../utils/cookie';
 import { useSelector, useDispatch } from '../../services/hooks';
 import { TOrderFeed, TOrder } from '../../services/types';
 import OrderInfo from '../../components/order-info/order-info';
-import OrderDetails from '../../components/order-details/order-details';
-import { getOrderRequest } from '../../services/api';
-import { getOrderRequested, getOrderFailed, getOrderSuccess } from '../../services/actions/order';
 import { wsConnectionStart, wsConnectionClosed } from '../../services/actions/wsActions';
 import { TWsState } from '../../services/reducers/wsReducer';
 
@@ -36,8 +30,8 @@ const OrderFeedPage = () => {
         </h1>
         {orders.length !== 0 &&
           <div className={`${style.scrollBar} pr-1`}>
-            {orders.map((item: TOrder) => (
-              <OrderInfo key={item._id} order={item} />
+            {orders.map((item: TOrder, index: number) => (
+              <OrderInfo key={index} order={item} />
             ))}
           </div>
         }

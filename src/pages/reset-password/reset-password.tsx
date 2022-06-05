@@ -5,7 +5,7 @@ import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burg
 import { useSelector, useDispatch } from '../../services/hooks';
 import { TLocation } from '../../services/types';
 import { resetPasswordRequest } from '../../services/api';
-import { authRequest, authFailed, resetPasswordSuccess } from '../../services/actions/profile';
+import { resetPasswordThunk } from '../../services/actions/profile';
 
 import style from './reset-password.module.css';
 
@@ -25,16 +25,7 @@ const ResetPasswordPage = () => {
   const resetPassword = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
-
-			dispatch(authRequest);
-			resetPasswordRequest(form).then(data => {
-				dispatch(resetPasswordSuccess(data));
-				history.replace({ pathname: '/profile' });
-			})
-			.catch((e: number | string | null) => {
-				console.log(e);
-				dispatch(authFailed);
-			})
+			dispatch(resetPasswordThunk(form, history));
     },
     [form]
   );

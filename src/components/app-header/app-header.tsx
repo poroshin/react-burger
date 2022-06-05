@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, Link } from 'react-router-dom';
 import { Logo, ProfileIcon, BurgerIcon, ListIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
 import style from './app-header.module.css';
@@ -33,7 +33,7 @@ function AppHeader() {
         </nav>
       </div>
       <div className={style.logo}>
-        <Logo />
+      <Link to='/'><Logo /></Link>
       </div>
       <div className={style.header__end}>
         <nav className={`${style.header__nav} pt-4 pr-5 pb-4 pl-5 mt-4 mb-4`}>

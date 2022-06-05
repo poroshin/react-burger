@@ -103,7 +103,6 @@ export const profileReducer = (state: TProfileState = profileInitialState, actio
     case TOKEN_SUCCESS: {
       return {
         ...state,
-        isLoggedIn: true,
 				user: {},
         isLoaded: true,
         isRequested: false
@@ -113,6 +112,7 @@ export const profileReducer = (state: TProfileState = profileInitialState, actio
       return {
         ...state,
         user: action.data.user,
+        isLoggedIn: true,
         isLoaded: true,
         isRequested: false
       };

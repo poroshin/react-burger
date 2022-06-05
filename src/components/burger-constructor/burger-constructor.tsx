@@ -15,9 +15,10 @@ import style from './burger-constructor.module.css';
 
 type TBurgerConstructor = {
   onOpenModalOrder: () => void;
+  orderPrepare: boolean;
 }
 
-const BurgerConstructor = ({onOpenModalOrder}: TBurgerConstructor) => {
+const BurgerConstructor = ({onOpenModalOrder, orderPrepare}: TBurgerConstructor) => {
   const dispatch = useDispatch();
   const selectedBun = useSelector(state => state.selectedIngredientsReducer.bun);
   const selectedIngredients = useSelector(state => state.selectedIngredientsReducer.data);
@@ -83,14 +84,16 @@ const BurgerConstructor = ({onOpenModalOrder}: TBurgerConstructor) => {
         </div>
         }
       </div>
-      <div className={style.checkout}>
+      <div className={`${style.checkout}`}>
         <div className={`${style.price} pr-10`}>
           <p className="text text_type_digits-medium pr-2">{totalPrice}</p>
           <CurrencyIcon type="primary" />
         </div>
-        <Button type="primary" size="large" onClick={onOpenModalOrder}>
-          Оформить заказ
-        </Button>
+        {!orderPrepare && 
+          <Button type="primary" size="large" onClick={onOpenModalOrder}>
+            Оформить заказ
+          </Button>
+        }
       </div>
     </section>
   );

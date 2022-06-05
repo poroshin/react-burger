@@ -71,6 +71,7 @@ export const logoutRequest = async () => {
 
 export const tokenRequest = async () => {
   const token = localStorage.getItem('refreshToken');
+  console.log('refreshToken ' + token);
   return await fetch(`${baseUrl}/auth/token`, {
 		method: 'POST',
 		headers: {

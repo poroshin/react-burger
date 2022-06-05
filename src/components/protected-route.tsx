@@ -1,11 +1,8 @@
-import { Redirect, Route, useLocation, RouteProps } from 'react-router-dom';
+import { Redirect, Route, RouteProps } from 'react-router-dom';
 
-import { useSelector, useDispatch } from '../services/hooks';
-import { TLocation } from '../services/types';
+import { useSelector } from '../services/hooks';
 
 export const ProtectedRoute = ({ children, ...rest }: RouteProps) => {
-  const location: TLocation = useLocation();
-  const dispatch = useDispatch();
   const profile = useSelector(state => state.profileReducer);
 
   return (

@@ -26,6 +26,7 @@ const HomePage = () => {
 
   const [modal, setModal] = useState({
     isOpenOrderDetails: false,
+    orderPrepare: false
   });
   const [ingredient, setIngredient] = useState(null);
 
@@ -37,6 +38,7 @@ const HomePage = () => {
     });
     const ingredientsToOrder: TIngredientsToOrder = {ingredients: tempIngredientsArray};
     if(profile.isLoggedIn){
+      setModal({ ...modal, orderPrepare: true });
 			dispatch(getOrderRequested);
 			getOrderRequest(ingredientsToOrder).then(data => {
 				dispatch(getOrderSuccess(data));
@@ -51,7 +53,7 @@ const HomePage = () => {
     }
   }
   const handleCloseModal = () => {
-    setModal({ ...modal, isOpenOrderDetails: false });
+    setModal({ ...modal, isOpenOrderDetails: false, orderPrepare: false });
   }
   
   return (
@@ -59,7 +61,7 @@ const HomePage = () => {
 			{modal.isOpenOrderDetails && <OrderDetails onClose={handleCloseModal} />}
 			<DndProvider backend={HTML5Backend}>
 				<BurgerIngredients />
-				<BurgerConstructor onOpenModalOrder={handleOpenModalOrder} />
+				<BurgerConstructor onOpenModalOrder={handleOpenModalOrder} orderPrepare={modal.orderPrepare} />
 			</DndProvider>
 		</main>
   );

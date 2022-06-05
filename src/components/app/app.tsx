@@ -3,10 +3,8 @@ import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 
 import { useSelector, useDispatch } from '../../services/hooks';
 import { TLocation } from '../../services/types';
-import { getCookie, setCookie } from '../../utils/cookie';
 import { getIngredients } from '../../services/actions/ingredients';
-import { getUserRequest, tokenRequest } from '../../services/api';
-import { authRequest, authFailed, getUserSuccess, tokenSuccess } from '../../services/actions/profile';
+import { authorizationThunk } from '../../services/actions/profile';
 import { ProtectedRoute } from '../protected-route';
 import AppHeader from '../app-header/app-header';
 import Modal from '../modal/modal';
@@ -34,34 +32,7 @@ const App = () => {
   
   useEffect(() => {
     dispatch(getIngredients());
-    const refreshToken = localStorage.getItem('refreshToken');
-
-    dispatch(authRequest);
-    getUserRequest().then(data => {
-      dispatch(getUserSuccess(data));
-    })
-    .catch((e: number | string | null) => {
-      if (e == 403) {
-        dispatch(authRequest);
-        tokenRequest().then(data => {
-          dispatch(tokenSuccess());
-          let accessToken = data.accessToken.split('Bearer ')[1];
-          setCookie('accessToken', accessToken);
-          localStorage.setItem('refreshToken', data.refreshToken);
-
-          dispatch(authRequest);
-          getUserRequest().then(data => {
-            dispatch(getUserSuccess(data));
-          })
-        })
-        .catch((e: number | string | null) => {
-          console.log(e);
-          dispatch(authFailed);
-        })
-      }
-      console.log(e);
-      dispatch(authFailed);
-    })
+    dispatch(authorizationThunk());
   }, [dispatch]);
 
   const handleCloseModal = () => {
