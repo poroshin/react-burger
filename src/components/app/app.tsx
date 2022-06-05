@@ -99,11 +99,11 @@ const App = () => {
         </Route>
       )}
       {background && (
-        <Route path="/profile/orders/:id">
+        <ProtectedRoute path="/profile/orders/:id">
           <Modal onClose={handleCloseModal}>
             <OrderModal />
           </Modal>
-        </Route>
+        </ProtectedRoute>
       )}
     </>
   );

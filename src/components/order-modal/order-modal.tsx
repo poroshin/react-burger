@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { wsUrlAll } from '../../utils/constants';
+import { wsUrlAll, wsUrlUser } from '../../utils/constants';
 import { getCookie } from '../../utils/cookie';
 import { sayDate } from '../../utils/filter';
 import { useSelector, useDispatch } from '../../services/hooks';
@@ -17,17 +17,17 @@ const OrderModal = () => {
   const dispatch = useDispatch();
   const { feed }: TWsState = useSelector((state) => state.wsReducer);
   const orders = feed.orders;
+  const { pathname } = useLocation();
+  const wsUrl = pathname.includes('profile/orders') ? wsUrlUser : wsUrlAll;
 
   useEffect(() => {
-    dispatch(wsConnectionStart(wsUrlAll, getCookie('accessToken')));
+    dispatch(wsConnectionStart(wsUrl, getCookie('accessToken')));
     return () => {
       dispatch(wsConnectionClosed());
     };
   }, [dispatch]);
   
   const dataState = useSelector(state => state.ingredientsReducer);
-  // let ingredientsOrder: TIngredient[] = [];
-  // let totalPrice: number = 0;
   type TOrderState = {
     ingredientsOrder: TIngredient[];
     totalPrice: number;
