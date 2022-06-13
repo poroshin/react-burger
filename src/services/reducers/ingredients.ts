@@ -8,6 +8,7 @@ import {
   DECREASE_INGREDIENT_COUNT,
   SET_BUN_COUNT,
   DELETE_BUN_COUNT,
+  CLEAR_ALL_COUNT,
 } from '../constants';
 
 export type TIngredientsState = {
@@ -79,6 +80,14 @@ export const ingredientsReducer = (state: TIngredientsState = ingredientsInitial
         ...state,
         data: [...state.data].map((item: TIngredient) =>
           item.type === 'bun' ? { ...item, count: 0 } : item
+        )
+      };
+    }
+    case CLEAR_ALL_COUNT: {
+      return {
+        ...state,
+        data: [...state.data].map((item: TIngredient) =>
+          item.count != 0 ? { ...item, count: 0 } : item
         )
       };
     }

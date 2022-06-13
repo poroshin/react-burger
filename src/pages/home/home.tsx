@@ -10,6 +10,8 @@ import BurgerConstructor from '../../components/burger-constructor/burger-constr
 import OrderDetails from '../../components/order-details/order-details';
 import { getOrderRequest } from '../../services/api';
 import { getOrderRequested, getOrderFailed, getOrderSuccess } from '../../services/actions/order';
+import { clearIngredients } from '../../services/actions/selectedIngredients';
+import { clearAllCount } from '../../services/actions/ingredients';
 
 import style from './home.module.css';
 
@@ -42,6 +44,8 @@ const HomePage = () => {
 			dispatch(getOrderRequested);
 			getOrderRequest(ingredientsToOrder).then(data => {
 				dispatch(getOrderSuccess(data));
+				dispatch(clearIngredients());
+				dispatch(clearAllCount());
         setModal({ ...modal, isOpenOrderDetails: true });
 			})
 			.catch((e: number | string | null) => {
