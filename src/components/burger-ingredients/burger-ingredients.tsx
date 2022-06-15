@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDrag } from "react-dnd";
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -13,10 +13,6 @@ import style from './burger-ingredients.module.css';
 type TIngredientItem = {
   ingredient: TIngredient;
   isOpenModal?: (arg0: TIngredient) => void;
-}
-
-type TBurgerIngredients = {
-  onOpenModalIngredient: () => void;
 }
 
 const Ingredient: FC<TIngredientItem> = ({ingredient}) => {
@@ -63,17 +59,20 @@ const BurgerIngredients = () => {
       const tabIngredientsElement = ingredientsElement.getBoundingClientRect().top;
       const sauceBun = tabIngredientsElement - sauceElement.getBoundingClientRect().top;
       const mainBun = tabIngredientsElement - mainElement.getBoundingClientRect().top;
-      mainBun >= 0 
+      mainBun >= -1 
         ? setCurrentTab(labels.main) 
-        : sauceBun >= 0 
+        : sauceBun >= -1 
           ? setCurrentTab(labels.sauce)
           : setCurrentTab(labels.bun);
     }
   }
 
-  const scrollToTab = (tab: React.SetStateAction<string>) => {
-    setCurrentTab(tab);
-    // document.getElementById(tab).scrollIntoView({ behavior: "smooth" }); // todo optionaly
+  const bunRef = useRef<HTMLHeadingElement>(null);
+  const sauceRef = useRef<HTMLHeadingElement>(null);
+  const mainRef = useRef<HTMLHeadingElement>(null);
+
+  const scrollToTab = (tab: string, ref: React.RefObject<HTMLHeadingElement>) => () => {
+    ref.current?.scrollIntoView({block: "start", behavior: "smooth" });
   }
 
   return (
@@ -82,19 +81,19 @@ const BurgerIngredients = () => {
         Соберите бургер
       </h1>
       <div className={`${style.tab} pb-5`}>
-        <Tab value="bun" active={currentTab === labels.bun} onClick={scrollToTab}>
+        <Tab value="bun" active={currentTab === labels.bun} onClick={scrollToTab('bun', bunRef)}>
           Булки
         </Tab>
-        <Tab value="sauce" active={currentTab === labels.sauce} onClick={scrollToTab}>
+        <Tab value="sauce" active={currentTab === labels.sauce} onClick={scrollToTab('sauce', sauceRef)}>
           Соусы
         </Tab>
-        <Tab value="main" active={currentTab === labels.main} onClick={scrollToTab}>
+        <Tab value="main" active={currentTab === labels.main} onClick={scrollToTab('main', mainRef)}>
           Начинки
         </Tab>
       </div>
       {dataState.isLoaded &&
       <div className={`${style.scrollBar} pr-1`} id={labels.ingredients} onScroll={onScrollIngredients}>
-        <h2 className='text text_type_main-medium pt-5 pb-2' id={labels.bun}>
+        <h2 ref={bunRef} className='text text_type_main-medium pt-5 pb-2' id={labels.bun}>
           Булки
         </h2>
         <ul className={style.array}>
@@ -102,7 +101,7 @@ const BurgerIngredients = () => {
             <Ingredient key={item._id} ingredient={item} />
           ))}
         </ul>
-        <h2 className='text text_type_main-medium pt-5 pb-2' id={labels.sauce}>
+        <h2 ref={sauceRef} className='text text_type_main-medium pt-5 pb-2' id={labels.sauce}>
           Соусы
         </h2>
         <ul className={style.array}>
@@ -110,7 +109,7 @@ const BurgerIngredients = () => {
             <Ingredient key={item._id} ingredient={item} />
           ))}
         </ul>
-        <h2 className='text text_type_main-medium pt-5 pb-2' id={labels.main}>
+        <h2 ref={mainRef} className='text text_type_main-medium pt-5 pb-2' id={labels.main}>
           Начинка
         </h2>
         <ul className={style.array}>

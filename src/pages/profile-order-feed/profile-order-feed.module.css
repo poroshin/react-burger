@@ -4,6 +4,8 @@
   overflow: hidden;
   margin: 0px auto 0 auto;
   justify-content: space-evenly;
+  height: calc(100% - 88px);
+  padding-top: 88px;
 }
 .form {
   display: flex;
