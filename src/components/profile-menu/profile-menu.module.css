@@ -1,0 +1,13 @@
+.nav {
+    height: 64px;
+    text-decoration-line: none;
+    color: #8585AD;
+}
+.activeNav {
+    height: 64px;
+    text-decoration-line: none;
+    color: #FFFFFF;
+}
+.navText {
+    margin-top: 16px;
+}

@@ -1,46 +1,74 @@
-import { TAuth } from '../types';
+import { AppDispatch, AppThunk, TOrderData } from '../types';
+import { getOrderRequest } from '../api';
 
-export const GET_ORDER_REQUEST = 'GET_ORDER_REQUEST';
-export const GET_ORDER_FAILED = 'GET_ORDER_FAILED';
-export const GET_ORDER_SUCCESS = 'GET_ORDER_SUCCESS';
+import {
+  GET_ORDER_REQUEST,
+  GET_ORDER_FAILED,
+  GET_ORDER_SUCCESS,
+  INCREASE_TOTAL_PRICE,
+  DELETE_TOTAL_PRICE,
+} from '../constants';
 
-export const INCREASE_TOTAL_PRICE = 'INCREASE_TOTAL_PRICE';
-export const DELETE_TOTAL_PRICE = 'DELETE_TOTAL_PRICE';
+export interface IGetOrderSuccessAction {
+  readonly type: typeof GET_ORDER_SUCCESS;
+	data: TOrderData;
+}
 
-export const getOrderSuccess = (data: TAuth) => {
-  return function(dispatch: (arg0: { type: string; data: TAuth; }) => void) {
-		dispatch({
-			type: GET_ORDER_SUCCESS,
-			data: data
-		});
+export interface IGetOrderRequestedAction {
+  readonly type: typeof GET_ORDER_REQUEST;
+}
+
+export interface IGetOrderFailedAction {
+  readonly type: typeof GET_ORDER_FAILED;
+}
+
+export interface ISetTotalPriceAction {
+  readonly type: typeof INCREASE_TOTAL_PRICE;
+	price: number;
+}
+
+export interface IDeleteTotalPriceAction {
+  readonly type: typeof DELETE_TOTAL_PRICE;
+}
+
+export type TOrderActions = 
+	| IGetOrderSuccessAction
+  | IGetOrderRequestedAction
+  | IGetOrderFailedAction
+  | ISetTotalPriceAction
+  | IDeleteTotalPriceAction;
+
+export const getOrder: AppThunk = (ingredientsToOrder) => {
+  return function(dispatch: AppDispatch) {
+    dispatch(getOrderRequested());
+    getOrderRequest(ingredientsToOrder).then(data => {
+      dispatch(getOrderSuccess(data));
+    })
+    .catch((e: number | string | null) => {
+      console.log(e);
+      dispatch(getOrderFailed());
+    })
   };
 }
 
-export const getOrderRequested = () => {
-  return function(dispatch: (arg0: { type: string; }) => void) {
-    dispatch({
-      type: GET_ORDER_REQUEST
-    });
-  };
-}
+export const getOrderSuccess = (data: TOrderData): IGetOrderSuccessAction => ({
+  type: GET_ORDER_SUCCESS,
+  data: data
+})
 
-export const getOrderFailed = () => {
-  return function(dispatch: (arg0: { type: string; }) => void) {
-    dispatch({
-      type: GET_ORDER_FAILED
-    });
-  };
-}
+export const getOrderRequested = (): IGetOrderRequestedAction => ({
+  type: GET_ORDER_REQUEST
+})
 
-export const setTotalPrice = (price: number) => {
-	return {
-		type: INCREASE_TOTAL_PRICE,
-		price: price
-	}
-}
+export const getOrderFailed = (): IGetOrderFailedAction => ({
+  type: GET_ORDER_FAILED
+})
 
-export const deleteTotalPrice = () => {
-	return {
-		type: DELETE_TOTAL_PRICE
-	}
-}
+export const setTotalPrice = (price: number): ISetTotalPriceAction => ({
+  type: INCREASE_TOTAL_PRICE,
+  price: price
+})
+
+export const deleteTotalPrice = (): IDeleteTotalPriceAction => ({
+  type: DELETE_TOTAL_PRICE
+})

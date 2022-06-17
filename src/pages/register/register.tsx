@@ -1,13 +1,10 @@
 import React, { useState, useCallback, FormEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Redirect, Link, useHistory, useLocation } from 'react-router-dom';
 import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { TRootState } from '../../services/reducers';
+import { useSelector, useDispatch } from '../../services/hooks';
 import { TLocation } from '../../services/types';
-import { registerRequest } from '../../services/api';
-import { authRequest, authFailed, registerSuccess } from '../../services/actions/profile';
-import { setCookie } from '../../utils/cookie';
+import { registerThunk } from '../../services/actions/profile';
 
 import style from './register.module.css';
 
@@ -15,7 +12,7 @@ const RegisterPage = () => {
   const location: TLocation = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const profile: any = useSelector<TRootState>(state => state.profile);
+  const profile = useSelector(state => state.profileReducer);
   const token = localStorage.getItem('refreshToken');
 
 	const [form, setValue] = useState({ name: '', email: '', password: '' });
@@ -27,19 +24,7 @@ const RegisterPage = () => {
   const register = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
-
-			dispatch(authRequest);
-			registerRequest(form).then(data => {
-				dispatch(registerSuccess(data));
-				let accessToken = data.accessToken.split('Bearer ')[1];
-				setCookie('accessToken', accessToken);
-				localStorage.setItem('refreshToken', data.refreshToken);
-				history.replace({ pathname: '/profile' });
-			})
-			.catch((e: number | string | null) => {
-				console.log(e);
-				dispatch(authFailed);
-			})
+			dispatch(registerThunk(form, history));
     },
     [form]
   );

@@ -1,5 +1,5 @@
 import { TIngredient } from '../types';
-
+import { TIngredientsActions } from '../actions/ingredients';
 import {
 	GET_INGREDIENTS_REQUEST,
 	GET_INGREDIENTS_FAILED,
@@ -8,7 +8,14 @@ import {
   DECREASE_INGREDIENT_COUNT,
   SET_BUN_COUNT,
   DELETE_BUN_COUNT,
-} from '../actions/ingredients';
+} from '../constants';
+
+export type TIngredientsState = {
+	isLoaded: boolean;
+	isFailed: boolean;
+	isRequested: boolean;
+	data: TIngredient[];
+};
 
 const ingredientsInitialState = {
 	isLoaded: false,
@@ -17,7 +24,7 @@ const ingredientsInitialState = {
 	data: []
 };
 
-export const ingredientsReducer = (state = ingredientsInitialState, action: { type: string; data: Array<TIngredient>; ingredient: TIngredient; }) => {
+export const ingredientsReducer = (state: TIngredientsState = ingredientsInitialState, action: TIngredientsActions): TIngredientsState => {
   switch (action.type) {
     case GET_INGREDIENTS_REQUEST: {
       return {

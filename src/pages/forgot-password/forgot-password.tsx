@@ -1,12 +1,10 @@
 import React, { useState, useCallback, FormEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Redirect, Link, useHistory, useLocation } from 'react-router-dom';
 import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 
-import { TRootState } from '../../services/reducers';
+import { useSelector, useDispatch } from '../../services/hooks';
 import { TLocation } from '../../services/types';
-import { forgotPasswordRequest } from '../../services/api';
-import { authRequest, authFailed, forgotPasswordSuccess } from '../../services/actions/profile';
+import { forgotPasswordThunk } from '../../services/actions/profile';
 
 import style from './forgot-password.module.css';
 
@@ -14,7 +12,7 @@ const ForgotPasswordPage = () => {
   const location: TLocation = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const profile: any = useSelector<TRootState>(state => state.profile);
+  const profile = useSelector(state => state.profileReducer);
   const token = localStorage.getItem('refreshToken');
 
 	const [form, setValue] = useState({ email: '' });
@@ -26,16 +24,7 @@ const ForgotPasswordPage = () => {
   const forgotPassword = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
-
-			dispatch(authRequest);
-			forgotPasswordRequest(form).then(data => {
-				dispatch(forgotPasswordSuccess(data));
-				history.replace({ pathname: '/reset-password' });
-			})
-			.catch((e: number | string | null) => {
-				console.log(e);
-				dispatch(authFailed);
-			})
+			dispatch(forgotPasswordThunk(form, history));
     },
     [form]
   );

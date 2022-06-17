@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { useDrag, useDrop } from "react-dnd";
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
+import { useDispatch } from '../../services/hooks';
 import { TIngredient } from '../../services/types';
 import { deleteItemSelectedIngredients, sortIngredients } from '../../services/actions/selectedIngredients';
 import { decreaseIngredientCount } from '../../services/actions/ingredients';

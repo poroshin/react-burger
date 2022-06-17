@@ -15,12 +15,7 @@ export const checkResponse = (res: Response) => {
   }
 }
 
-export const checkSuccess = (res: {
-	data: TAuth;
-  refreshToken: string; 
-  accessToken: string; 
-  success: boolean; 
-}) => {
+export const checkSuccess = (res: any) => {
   if(res.success){
     return res;
   }else{
@@ -36,7 +31,8 @@ export const getOrderRequest = async (selectedIngredients: TIngredientsToOrder) 
   return await fetch(`${baseUrl}/orders`, {
 		method: 'POST',
 		headers: {
-			'Content-Type': 'application/json;charset=utf-8'
+			'Content-Type': 'application/json;charset=utf-8',
+      Authorization: 'Bearer ' + getCookie('accessToken')
 		},
     body: JSON.stringify(selectedIngredients)
   }).then(checkResponse).then(checkSuccess)
@@ -75,6 +71,7 @@ export const logoutRequest = async () => {
 
 export const tokenRequest = async () => {
   const token = localStorage.getItem('refreshToken');
+  console.log('refreshToken ' + token);
   return await fetch(`${baseUrl}/auth/token`, {
 		method: 'POST',
 		headers: {
