@@ -9,6 +9,7 @@ import {
   DECREASE_INGREDIENT_COUNT,
   SET_BUN_COUNT,
   DELETE_BUN_COUNT,
+	CLEAR_ALL_COUNT,
 } from '../constants';
 
 export interface IGetIngredientsRequestAction {
@@ -43,6 +44,10 @@ export interface IDeleteBunCountAction {
   readonly type: typeof DELETE_BUN_COUNT;
 }
 
+export interface IClearAllCountAction {
+  readonly type: typeof CLEAR_ALL_COUNT;
+}
+
 export type TIngredientsActions = 
 	| IGetIngredientsRequestAction
   | IGetIngredientsSuccessAction
@@ -50,7 +55,8 @@ export type TIngredientsActions =
   | IIncreaseIngredientCountAction
   | IDecreaseIngredientCountAction
   | ISetBunCountAction
-  | IDeleteBunCountAction;
+  | IDeleteBunCountAction
+	| IClearAllCountAction;
 
 export const getIngredients: AppThunk = () => {
   return function(dispatch: AppDispatch) {
@@ -95,4 +101,8 @@ export const setBunCount = (ingredient: TIngredient): ISetBunCountAction => ({
 
 export const deleteBunCount = (): IDeleteBunCountAction => ({
 	type: DELETE_BUN_COUNT
+})
+
+export const clearAllCount = (): IClearAllCountAction => ({
+	type: CLEAR_ALL_COUNT
 })
