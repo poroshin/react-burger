@@ -1,4 +1,4 @@
-import React, { FC, useRef, useCallback } from 'react';
+import React, { FC, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDrag } from "react-dnd";
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
