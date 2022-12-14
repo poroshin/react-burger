@@ -4,6 +4,8 @@
     overflow: hidden;
     width: 480px;
     margin: 180px auto 0 auto;
+    height: calc(100% - 88px);
+    padding-top: 88px;
 }
 .notFound {
     text-align: center;

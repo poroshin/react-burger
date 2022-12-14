@@ -1,7 +1,6 @@
 import { baseUrl } from '../utils/constants';
 import { getCookie } from '../utils/cookie';
-import { TUserForm, TIngredient } from '../services/types';
-import { TAuth } from '../services/types';
+import { TUserForm } from '../services/types';
 
 type TIngredientsToOrder = {
   ingredients: string[];

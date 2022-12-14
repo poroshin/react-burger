@@ -9,7 +9,9 @@ import BurgerIngredients from '../../components/burger-ingredients/burger-ingred
 import BurgerConstructor from '../../components/burger-constructor/burger-constructor';
 import OrderDetails from '../../components/order-details/order-details';
 import { getOrderRequest } from '../../services/api';
-import { getOrderRequested, getOrderFailed, getOrderSuccess } from '../../services/actions/order';
+import { getOrderRequested, getOrderFailed, getOrderSuccess, clearOrder } from '../../services/actions/order';
+import { clearIngredients } from '../../services/actions/selectedIngredients';
+import { clearAllCount } from '../../services/actions/ingredients';
 
 import style from './home.module.css';
 
@@ -38,11 +40,12 @@ const HomePage = () => {
     });
     const ingredientsToOrder: TIngredientsToOrder = {ingredients: tempIngredientsArray};
     if(profile.isLoggedIn){
-      setModal({ ...modal, orderPrepare: true });
+      setModal({ ...modal, isOpenOrderDetails: true, orderPrepare: true });
 			dispatch(getOrderRequested);
 			getOrderRequest(ingredientsToOrder).then(data => {
 				dispatch(getOrderSuccess(data));
-        setModal({ ...modal, isOpenOrderDetails: true });
+				dispatch(clearIngredients());
+				dispatch(clearAllCount());
 			})
 			.catch((e: number | string | null) => {
 				console.log(e);
@@ -54,6 +57,7 @@ const HomePage = () => {
   }
   const handleCloseModal = () => {
     setModal({ ...modal, isOpenOrderDetails: false, orderPrepare: false });
+    dispatch(clearOrder());
   }
   
   return (

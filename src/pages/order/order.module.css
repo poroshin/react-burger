@@ -4,4 +4,6 @@
   overflow: hidden;
   width: 480px;
   margin: 120px auto 0 auto;
+  height: calc(100% - 88px);
+  padding-top: 88px;
 }

@@ -5,6 +5,7 @@ import {
   GET_ORDER_SUCCESS,
   INCREASE_TOTAL_PRICE,
   DELETE_TOTAL_PRICE,
+  CLEAR_ORDER,
 } from '../constants';
 
 export type TOrderState = {
@@ -61,6 +62,9 @@ export const orderReducer = (state: TOrderState = orderInitialState, action: TOr
         ...state,
         totalPrice: 0
       };
+    }
+    case CLEAR_ORDER: {
+      return orderInitialState;
     }
     default: {
       return state;

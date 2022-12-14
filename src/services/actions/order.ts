@@ -7,6 +7,7 @@ import {
   GET_ORDER_SUCCESS,
   INCREASE_TOTAL_PRICE,
   DELETE_TOTAL_PRICE,
+  CLEAR_ORDER,
 } from '../constants';
 
 export interface IGetOrderSuccessAction {
@@ -31,12 +32,17 @@ export interface IDeleteTotalPriceAction {
   readonly type: typeof DELETE_TOTAL_PRICE;
 }
 
+export interface IClearOrderAction {
+  readonly type: typeof CLEAR_ORDER;
+}
+
 export type TOrderActions = 
 	| IGetOrderSuccessAction
   | IGetOrderRequestedAction
   | IGetOrderFailedAction
   | ISetTotalPriceAction
-  | IDeleteTotalPriceAction;
+  | IDeleteTotalPriceAction
+  | IClearOrderAction;
 
 export const getOrder: AppThunk = (ingredientsToOrder) => {
   return function(dispatch: AppDispatch) {
@@ -71,4 +77,8 @@ export const setTotalPrice = (price: number): ISetTotalPriceAction => ({
 
 export const deleteTotalPrice = (): IDeleteTotalPriceAction => ({
   type: DELETE_TOTAL_PRICE
+})
+
+export const clearOrder = (): IClearOrderAction => ({
+  type: CLEAR_ORDER
 })
